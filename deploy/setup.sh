@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DOMAIN="iwi.golf"
-REPO_URL="https://github.com/huntermelrose831/iwi-golf.git"
+REPO_URL="git@github.com:huntermelrose831/iwi-golf.git"
 APP_DIR="/var/www/iwi-golf"
 
 echo "==> Installing Nginx, Node.js, pm2, certbot"
