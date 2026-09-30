@@ -54,6 +54,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: UNIT_AMOUNT,
       currency: CURRENCY,
+      // Which methods appear here (card, Apple/Google Pay, etc.) is controlled by your Stripe Dashboard settings.
       automatic_payment_methods: { enabled: true },
       receipt_email: order.email,
       description: `IWI 3D Printed Hole-in-One Model — ${order.course} — Hole ${order.hole} — ${order.golferName}`,
