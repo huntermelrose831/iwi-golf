@@ -1,0 +1,22 @@
+.footer {
+  background-color: var(--color-surface);
+  padding: 1.25rem 1.5rem;
+}
+
+.footer__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.footer__copyright {
+  margin: 0;
+}
+
+.footer__version {
+  margin: 0;
+}

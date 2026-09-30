@@ -1,0 +1,30 @@
+.order-success {
+  padding: 6rem 1.5rem;
+  text-align: center;
+}
+
+.order-success__inner {
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.order-success__heading {
+  color: var(--color-text-light);
+  font-size: 2.25rem;
+  margin: 0;
+}
+
+.order-success__subtext {
+  color: var(--color-text-muted);
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.order-success__link {
+  color: var(--color-accent);
+  font-weight: 600;
+}

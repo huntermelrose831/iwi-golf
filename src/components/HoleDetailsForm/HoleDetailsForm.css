@@ -1,0 +1,94 @@
+.hole-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.hole-details-form__heading {
+  color: var(--color-text-light);
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.hole-details-form__subtext {
+  color: var(--color-text-muted);
+  margin: -0.75rem 0 0;
+  font-size: 0.9rem;
+}
+
+.hole-details-form__row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.hole-details-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.hole-details-form__label {
+  color: var(--color-text-light);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.hole-details-form__required {
+  color: #ff8a8a;
+}
+
+.hole-details-form__input {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-light);
+  font-size: 1rem;
+  color-scheme: dark;
+}
+
+.hole-details-form__input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+.hole-details-form__input option {
+  color: #1a1a1a;
+  background-color: #ffffff;
+}
+
+.hole-details-form__input--date {
+  width: 66%;
+}
+
+.hole-details-form__input:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.hole-details-form__next {
+  align-self: flex-end;
+  padding: 0.85rem 1.75rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.hole-details-form__next:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.hole-details-form__next:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .hole-details-form__row {
+    grid-template-columns: 1fr;
+  }
+}

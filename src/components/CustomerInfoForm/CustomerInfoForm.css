@@ -1,0 +1,106 @@
+.customer-info-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.customer-info-form__heading {
+  color: var(--color-text-light);
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.customer-info-form__section-label {
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0.5rem 0 -0.5rem;
+}
+
+.customer-info-form__row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.customer-info-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.customer-info-form__label {
+  color: var(--color-text-light);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.customer-info-form__required {
+  color: #ff8a8a;
+}
+
+.customer-info-form__input {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-light);
+  font-size: 1rem;
+}
+
+.customer-info-form__input option {
+  color: #1a1a1a;
+  background-color: #ffffff;
+}
+
+.customer-info-form__input:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.customer-info-form__actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.customer-info-form__back {
+  padding: 0.85rem 1.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: transparent;
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.customer-info-form__back:hover {
+  border-color: var(--color-text-light);
+}
+
+.customer-info-form__next {
+  padding: 0.85rem 1.75rem;
+  border-radius: 999px;
+  border: none;
+  background-color: var(--color-accent);
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.customer-info-form__next:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.customer-info-form__next:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .customer-info-form__row {
+    grid-template-columns: 1fr;
+  }
+}
