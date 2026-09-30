@@ -14,6 +14,8 @@ const COURSE_OPTIONS = [
   'Other',
 ]
 
+export { COURSE_OPTIONS }
+
 const CLUB_OPTIONS = [
   'Driver',
   '3 Wood',

@@ -66,31 +66,26 @@ website builder created, then add:
 
 DNS propagation is usually fast but can take up to ~24 hours.
 
-### 3. Set up the server
+### 3. Run the setup script
 
-SSH into the droplet, then:
+SSH into the droplet as root (or a sudo user), then:
 
 ```
-sudo apt update && sudo apt install -y nginx git
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
-sudo npm install -g pm2
-sudo npm install -g certbot python3-certbot-nginx  # or: sudo apt install certbot python3-certbot-nginx
-
-git clone https://github.com/huntermelrose831/iwi-golf.git /var/www/iwi-golf
-cd /var/www/iwi-golf
-npm ci
-npm run build          # produces dist/
-
-cd server
-npm ci
-cp .env.example .env   # then edit .env with the real STRIPE_SECRET_KEY and CLIENT_URL=https://iwi.golf
-pm2 start ecosystem.config.cjs
-pm2 save
-pm2 startup            # follow the printed instructions to enable pm2 on boot
+curl -fsSL https://raw.githubusercontent.com/huntermelrose831/iwi-golf/main/deploy/setup.sh -o setup.sh
+sudo bash setup.sh
 ```
 
-### 4. Configure Nginx
+This installs Nginx/Node/pm2/certbot, clones the repo to `/var/www/iwi-golf`, builds the
+client, installs server deps, starts the API with pm2, and wires up Nginx. It will print
+a reminder to edit `server/.env` with your real Stripe secret key — do that, then:
+
+```
+pm2 restart iwi-golf-api
+```
+
+### 4. Nginx is already configured by the script
+
+If you ever need to redo it manually:
 
 ```
 sudo cp /var/www/iwi-golf/deploy/nginx.iwi.golf.conf /etc/nginx/sites-available/iwi.golf
@@ -119,8 +114,5 @@ Stripe Dashboard → **Settings → Payment methods → Apple Pay → Add a new 
 ### Redeploying after changes
 
 ```
-cd /var/www/iwi-golf
-git pull
-npm ci && npm run build
-cd server && npm ci && pm2 restart iwi-golf-api
+cd /var/www/iwi-golf && sudo bash deploy/deploy.sh
 ```

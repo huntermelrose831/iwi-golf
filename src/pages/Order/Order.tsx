@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import HoleDetailsForm from '../../components/HoleDetailsForm/HoleDetailsForm'
+import { useSearchParams } from 'react-router-dom'
+import HoleDetailsForm, { COURSE_OPTIONS } from '../../components/HoleDetailsForm/HoleDetailsForm'
 import CustomerInfoForm from '../../components/CustomerInfoForm/CustomerInfoForm'
 import PaymentReview from '../../components/PaymentReview/PaymentReview'
 import type { FlagPosition } from '../../components/FlagPlacement/FlagPlacement'
@@ -27,7 +28,18 @@ const INITIAL_ORDER: OrderDetails = {
 const STEP_LABELS = ['Your Personalized Celebration', 'Order Information', 'Payment']
 
 function Order() {
-  const [order, setOrder] = useState<OrderDetails>(INITIAL_ORDER)
+  const [searchParams] = useSearchParams()
+
+  const [order, setOrder] = useState<OrderDetails>(() => {
+    const courseParam = searchParams.get('course')
+    const holeParam = searchParams.get('hole')
+
+    return {
+      ...INITIAL_ORDER,
+      course: courseParam && COURSE_OPTIONS.includes(courseParam) ? courseParam : INITIAL_ORDER.course,
+      hole: holeParam ?? INITIAL_ORDER.hole,
+    }
+  })
   const [step, setStep] = useState(1)
 
   const handleFieldChange = (field: keyof OrderDetails, value: string) => {
