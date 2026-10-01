@@ -50,6 +50,8 @@ pm2 save
 pm2 startup systemd -u root --hp /root | tail -n 1 || true
 
 echo "==> Configuring Nginx"
+mkdir -p /etc/nginx/snippets
+cp "$APP_DIR/deploy/security-headers.conf" /etc/nginx/snippets/security-headers.conf
 cp "$APP_DIR/deploy/nginx.iwi.golf.conf" "/etc/nginx/sites-available/$DOMAIN"
 ln -sf "/etc/nginx/sites-available/$DOMAIN" "/etc/nginx/sites-enabled/$DOMAIN"
 nginx -t
