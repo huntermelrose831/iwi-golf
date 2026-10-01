@@ -12,7 +12,7 @@ function Hero() {
             <br />
             One bounce.
             <br />
-            Rolling.
+            Rolling......
             <br />
             <span className="hero__heading-accent">It Went In!™</span>
           </h1>
