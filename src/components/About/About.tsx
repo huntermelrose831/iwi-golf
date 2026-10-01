@@ -8,28 +8,25 @@ function About() {
         <h2 className="about__heading">About IWI Enterprises</h2>
 
         <p className="about__paragraph">
-          At IWI Enterprises we believe that a most special event deserves a most special
-          celebration. And the most special event in Golf is..... Your Hole-in-One!
+          At IWI Enterprises, we believe the greatest moments in golf deserve a celebration
+          to match. And nothing is greater than your hole-in-one.
         </p>
 
         <p className="about__paragraph">
-          We are focused on providing a 3D Printed Personalized Celebration model for this
-          most special moment in golf. The model shows the 3D contours of the Green — and
-          includes the pin location and relevant features of the surrounding Fringe. These
-          include bunkers, water features, and other elements that define the hole.
-          Naturally, there is a spot to place the actual ball!
+          We make a 3D printed, personalized model of the actual green where it happened:
+          contours, pin location, and the surrounding features that define the hole,
+          including bunkers, water, and fringe. And of course, a spot for the ball itself.
         </p>
 
         <p className="about__paragraph">
-          Just click the "Order Your Personal Celebration" button and enter the data of
-          your Hole-in-One, including course name, hole number, yardage, selected club, and
-          date. Your Celebration will be built to order and shipped within five days.
+          Click "Order Your Personal Celebration," enter the details of your shot
+          (course name, hole number, yardage, club, and date), and your model will be
+          built to order and shipped within five days.
         </p>
 
         <p className="about__paragraph about__paragraph--emphasis">
-          Most golfers never achieve a Hole-in-One. Those who do essentially never get
-          another. Don't miss this singular opportunity to celebrate something very special
-          with something extra special.
+          Most golfers never make a hole-in-one. Those who do almost never make another.
+          Don't let this once-in-a-lifetime moment pass without commemorating the event.
         </p>
 
         <div className="about__actions">

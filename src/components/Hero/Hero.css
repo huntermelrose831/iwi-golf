@@ -51,7 +51,7 @@
 
 .hero__image {
   width: 100%;
-  max-width: 420px;
+  max-width: 600px;
   border-radius: 18px;
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
 }

@@ -1,5 +1,5 @@
 import Button from '../Button/Button'
-import heroImg from '../../assets/hero-delaveaga-5.png'
+import heroImg from '../../assets/Image1.jpg'
 import './Hero.css'
 
 function Hero() {
