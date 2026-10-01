@@ -134,7 +134,7 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             onChange={handleInput('date')}
           />
           <span className="hole-details-form__hint">
-            Had your ace years ago? Enter the full date — any year works.
+            Had your ace years ago? Enter the full date, any year works.
           </span>
         </label>
       </div>
