@@ -32,3 +32,21 @@ export async function createPaymentIntent(order: OrderDetails): Promise<string> 
   const data: { clientSecret: string } = await response.json()
   return data.clientSecret
 }
+
+export type ContactMessage = {
+  email: string
+  phone: string
+  message: string
+}
+
+export async function sendContactMessage(contact: ContactMessage): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/api/contact-message`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(contact),
+  })
+
+  if (!response.ok) {
+    throw new Error('Unable to send message. Please try again.')
+  }
+}

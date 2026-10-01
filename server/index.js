@@ -81,6 +81,16 @@ function sanitizePercent(value) {
   return String(Math.min(100, Math.max(0, num)))
 }
 
+// Same trim/strip rules as sanitizeString, just with a longer cap for free-text messages.
+const MAX_MESSAGE_LENGTH = 2000
+function sanitizeMessage(value) {
+  if (typeof value !== 'string') return ''
+  return value
+    .replace(/[\u0000-\u001F\u007F]/g, '')
+    .trim()
+    .slice(0, MAX_MESSAGE_LENGTH)
+}
+
 // Only known fields are copied out of the request body to avoid mass-assignment into Stripe calls.
 function pickOrderFields(body) {
   const textFields = [
@@ -163,6 +173,37 @@ app.post('/api/create-payment-intent', async (req, res) => {
   } catch (error) {
     console.error('Failed to create payment intent:', error.message)
     res.status(500).json({ error: 'Unable to start checkout.' })
+  }
+})
+
+app.post('/api/contact-message', async (req, res) => {
+  const email = sanitizeString(req.body?.email)
+  const phone = sanitizeString(req.body?.phone)
+  const message = sanitizeMessage(req.body?.message)
+
+  if (!message || (!email && !phone)) {
+    return res.status(400).json({ error: 'Provide a message and either an email or phone number.' })
+  }
+
+  if (email && !EMAIL_PATTERN.test(email)) {
+    return res.status(400).json({ error: 'Invalid email address.' })
+  }
+
+  if (!mailTransport || !ORDER_NOTIFICATION_EMAIL) {
+    return res.status(503).json({ error: 'Contact form is not configured yet.' })
+  }
+
+  try {
+    await mailTransport.sendMail({
+      from: process.env.SMTP_USER,
+      to: ORDER_NOTIFICATION_EMAIL,
+      subject: 'New contact form message from iwi.golf',
+      text: [`Email: ${email || '—'}`, `Phone: ${phone || '—'}`, '', message].join('\n'),
+    })
+    res.json({ sent: true })
+  } catch (error) {
+    console.error('Failed to send contact message:', error.message)
+    res.status(500).json({ error: 'Unable to send message.' })
   }
 })
 
