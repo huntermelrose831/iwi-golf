@@ -13,9 +13,7 @@ function About() {
         </p>
 
         <p className="about__paragraph">
-          We make a 3D printed, personalized model of the actual green where it happened:
-          contours, pin location, and the surrounding features that define the hole,
-          including bunkers, water, and fringe. And of course, a spot for the ball itself.
+          We make a 3D printed, personalized model of the actual green where it happened. It includes the contours, pin location, and the surrounding features that define the hole, including bunkers, water, and fringe. And of course, a spot for the ball itself.
         </p>
 
         <p className="about__paragraph">
