@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import HoleDetailsForm, { COURSE_OPTIONS } from '../../components/HoleDetailsForm/HoleDetailsForm'
+import HoleDetailsForm from '../../components/HoleDetailsForm/HoleDetailsForm'
 import CustomerInfoForm from '../../components/CustomerInfoForm/CustomerInfoForm'
 import PaymentReview from '../../components/PaymentReview/PaymentReview'
 import type { FlagPosition } from '../../components/FlagPlacement/FlagPlacement'
 import type { OrderDetails } from '../../lib/api'
+import { COURSE_OPTIONS } from '../../lib/courses'
 import './Order.css'
 
 const INITIAL_ORDER: OrderDetails = {

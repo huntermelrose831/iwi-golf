@@ -2,19 +2,8 @@ import type { ChangeEvent } from 'react'
 import FlagPlacement from '../FlagPlacement/FlagPlacement'
 import type { FlagPosition } from '../FlagPlacement/FlagPlacement'
 import type { OrderDetails } from '../../lib/api'
+import { COURSE_OPTIONS } from '../../lib/courses'
 import './HoleDetailsForm.css'
-
-const COURSE_OPTIONS = [
-  'DeLaveaga Golf Course',
-  'Los Lagos Golf Course',
-  'Moffett Field Golf Club',
-  'Seabright Country Club',
-  'Seascape Golf Club',
-  'Stanford University Golf Course',
-  'Other',
-]
-
-export { COURSE_OPTIONS }
 
 const CLUB_OPTIONS = [
   'Driver',
