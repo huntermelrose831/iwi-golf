@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const Stripe = require('stripe')
+const nodemailer = require('nodemailer')
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 
@@ -10,8 +11,54 @@ const PORT = process.env.PORT || 4242
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 const CURRENCY = process.env.STRIPE_CURRENCY || 'usd'
 const UNIT_AMOUNT = Number(process.env.STRIPE_UNIT_AMOUNT || 24900)
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
+const ORDER_NOTIFICATION_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL
+
+const mailTransport =
+  process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS
+    ? nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT || 465),
+        secure: Number(process.env.SMTP_PORT || 465) === 465,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      })
+    : null
 
 const app = express()
+
+// Stripe webhooks need the raw request body for signature verification, so this route
+// is registered before express.json() (which would otherwise consume/parse the body first).
+app.post(
+  '/api/webhooks/stripe',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    let event
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        req.headers['stripe-signature'],
+        STRIPE_WEBHOOK_SECRET,
+      )
+    } catch (error) {
+      console.error('Webhook signature verification failed:', error.message)
+      return res.status(400).send('Webhook signature verification failed.')
+    }
+
+    if (event.type === 'payment_intent.succeeded') {
+      const order = event.data.object.metadata || {}
+      await sendOrderNotificationEmail(order).catch((error) => {
+        console.error('Failed to send order notification email:', error.message)
+      })
+    }
+
+    res.json({ received: true })
+  },
+)
+
 app.use(cors({ origin: CLIENT_URL }))
 app.use(express.json({ limit: '10kb' }))
 
@@ -59,6 +106,32 @@ function pickOrderFields(body) {
   order.flagX = sanitizePercent(body?.flagX)
   order.flagY = sanitizePercent(body?.flagY)
   return order
+}
+
+async function sendOrderNotificationEmail(order) {
+  if (!mailTransport || !ORDER_NOTIFICATION_EMAIL) return
+
+  const lines = [
+    `Course: ${order.course || '—'}`,
+    `Hole: ${order.hole || '—'}`,
+    `Golfer: ${order.golferName || '—'}`,
+    `Date: ${order.date || '—'}`,
+    `Yardage: ${order.yardage || '—'}`,
+    `Club: ${order.club || '—'}`,
+    `Flag position (% from top-left of green): X=${order.flagX ?? '50'}, Y=${order.flagY ?? '50'}`,
+    '',
+    `Customer: ${order.name || '—'}`,
+    `Email: ${order.email || '—'}`,
+    `Phone: ${order.phone || '—'}`,
+    `Ship to: ${order.street || '—'}, ${order.city || '—'}, ${order.state || '—'} ${order.zip || '—'}`,
+  ]
+
+  await mailTransport.sendMail({
+    from: process.env.SMTP_USER,
+    to: ORDER_NOTIFICATION_EMAIL,
+    subject: `New IWI order — ${order.course || 'Unknown course'} Hole ${order.hole || '?'}`,
+    text: lines.join('\n'),
+  })
 }
 
 app.post('/api/create-payment-intent', async (req, res) => {
