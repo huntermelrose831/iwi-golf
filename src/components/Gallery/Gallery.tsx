@@ -3,9 +3,9 @@ import delaveagaImg from '../../assets/hero-delaveaga-5.png'
 import seabrightImg from '../../assets/seabright.png'
 import closeupImg from '../../assets/closeup.jpeg'
 import carouselImg1 from '../../assets/Image1.jpg'
-import carouselImg2 from '../../assets/Image2.JPG'
-import carouselImg3 from '../../assets/Image3.JPG'
-import carouselImg4 from '../../assets/Image6.JPG'
+import carouselImg2 from '../../assets/Image2.jpg'
+import carouselImg3 from '../../assets/Image3.jpg'
+import carouselImg4 from '../../assets/Image6.jpg'
 import './Gallery.css'
 
 const SLIDE_INTERVAL_MS = 4000
