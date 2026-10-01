@@ -74,6 +74,7 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             placeholder="e.g. 7"
             value={order.hole}
             onChange={handleInput('hole')}
+            maxLength={200}
             required
           />
         </label>
@@ -87,6 +88,7 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             placeholder="e.g. Jane Golfer"
             value={order.golferName}
             onChange={handleInput('golferName')}
+            maxLength={200}
             required
           />
         </label>
@@ -110,6 +112,7 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             placeholder="e.g. 178"
             value={order.yardage}
             onChange={handleInput('yardage')}
+            maxLength={200}
           />
         </label>
 

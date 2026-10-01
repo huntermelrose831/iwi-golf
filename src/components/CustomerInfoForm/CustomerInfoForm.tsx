@@ -39,6 +39,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
           placeholder="Your name"
           value={order.name}
           onChange={handleInput('name')}
+          maxLength={200}
           required
         />
       </label>
@@ -54,6 +55,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
             placeholder="you@example.com"
             value={order.email}
             onChange={handleInput('email')}
+            maxLength={200}
             required
           />
         </label>
@@ -66,6 +68,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
             placeholder="(555) 555-5555"
             value={order.phone}
             onChange={handleInput('phone')}
+            maxLength={40}
           />
         </label>
       </div>
@@ -81,6 +84,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
           placeholder="123 Fairway Dr, Apt 4"
           value={order.street}
           onChange={handleInput('street')}
+          maxLength={200}
           required
         />
       </label>
@@ -95,6 +99,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
             placeholder="Santa Cruz"
             value={order.city}
             onChange={handleInput('city')}
+            maxLength={100}
             required
           />
         </label>
@@ -129,6 +134,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
             placeholder="95060"
             value={order.zip}
             onChange={handleInput('zip')}
+            maxLength={12}
             required
           />
         </label>
