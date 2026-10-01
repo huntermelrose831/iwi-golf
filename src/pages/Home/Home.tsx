@@ -1,5 +1,6 @@
 import Hero from '../../components/Hero/Hero'
 import Features from '../../components/Features/Features'
+import About from '../../components/About/About'
 import Gallery from '../../components/Gallery/Gallery'
 import Cta from '../../components/Cta/Cta'
 import './Home.css'
@@ -9,6 +10,7 @@ function Home() {
     <main className="home">
       <Hero />
       <Features />
+      <About />
       <Gallery />
       <Cta />
     </main>

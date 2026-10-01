@@ -39,6 +39,5 @@
 .order__card {
   padding: 2rem;
   border-radius: 18px;
-  background-color: var(--color-surface);
-}
+  background-color: var(--color-surface);  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);}
 

@@ -24,9 +24,9 @@
 
 .header__logo {
   display: inline-block;
-  width: 44px;
+  width: 96px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: 8px;
   object-fit: cover;
 }
 

@@ -25,6 +25,7 @@
   background-color: var(--color-surface-raised);
   border-radius: 14px;
   padding: 1.75rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
 }
 
 .features__item-title {

@@ -27,6 +27,13 @@ body {
 
 body {
   background-color: var(--color-bg);
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.025) 0px,
+    rgba(255, 255, 255, 0.025) 1px,
+    transparent 1px,
+    transparent 4px
+  );
   color: var(--color-text-light);
 }
 
