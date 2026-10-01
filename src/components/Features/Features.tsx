@@ -2,19 +2,19 @@ import './Features.css'
 
 const FEATURE_ITEMS = [
   {
-    title: 'The green, in relief',
+    title: 'The Green, in relief',
     description:
-      "Printed from the hole's real contours, the green rises in layered relief — you can trace the slope your ball rode toward the cup.",
+      "Printed from the Green's real contours, showing the green in layered relief. Go ahead, trace the path your ball rode into the hole.",
   },
   {
-    title: 'Everything nearby',
+    title: 'Everything Nearby',
     description:
-      'The surrounding fairway and rough, the sand traps — rakes included — and any water guarding the green. All the trouble your shot ignored.',
+      'The surrounding ruffled fringe, the sand and water and more. All the trouble your shot avoided.',
   },
   {
     title: 'Your shot, on record',
     description:
-      'Course, hole, golfer — and if you tell us, the date, the yardage, and the club. The story of the ace travels with the model.',
+      'The data of your shot – the hole, the yardage, the pin location, your club selection. The story of you ace travels with the model.',
   },
 ]
 

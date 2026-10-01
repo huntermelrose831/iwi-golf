@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ChangeEvent } from 'react'
 import FlagPlacement from '../FlagPlacement/FlagPlacement'
 import type { FlagPosition } from '../FlagPlacement/FlagPlacement'
@@ -32,10 +33,25 @@ type HoleDetailsFormProps = {
 }
 
 function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDetailsFormProps) {
+  const [isCustomCourse, setIsCustomCourse] = useState(
+    Boolean(order.course) && !COURSE_OPTIONS.includes(order.course),
+  )
+
   const handleInput = (field: keyof OrderDetails) => (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     onFieldChange(field, event.currentTarget.value)
+  }
+
+  const handleCourseSelect = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.currentTarget.value
+    if (value === 'Other') {
+      setIsCustomCourse(true)
+      onFieldChange('course', '')
+    } else {
+      setIsCustomCourse(false)
+      onFieldChange('course', value)
+    }
   }
 
   return (
@@ -49,8 +65,8 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
         </span>
         <select
           className="hole-details-form__input"
-          value={order.course}
-          onChange={handleInput('course')}
+          value={isCustomCourse ? 'Other' : order.course}
+          onChange={handleCourseSelect}
           required
         >
           <option value="" disabled>
@@ -63,6 +79,22 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
           ))}
         </select>
       </label>
+
+      {isCustomCourse && (
+        <label className="hole-details-form__field">
+          <span className="hole-details-form__label">
+            <span className="hole-details-form__required">*</span> Course Name
+          </span>
+          <input
+            className="hole-details-form__input"
+            placeholder="Enter your course name"
+            value={order.course}
+            onChange={handleInput('course')}
+            maxLength={200}
+            required
+          />
+        </label>
+      )}
 
       <div className="hole-details-form__row">
         <label className="hole-details-form__field">
@@ -101,6 +133,9 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             value={order.date}
             onChange={handleInput('date')}
           />
+          <span className="hole-details-form__hint">
+            Had your ace years ago? Enter the full date — any year works.
+          </span>
         </label>
       </div>
 
