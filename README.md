@@ -20,3 +20,8 @@ This repo is the IWI.golf marketing site and ordering flow:
   co-located CSS file, using BEM-style class names scoped to that component.
 - **Server**: Node/Express API that creates Stripe PaymentIntents — keeps the Stripe secret
   key off the client and validates/sanitizes order data before it reaches Stripe.
+
+
+
+
+

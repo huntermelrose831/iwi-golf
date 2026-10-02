@@ -12,8 +12,8 @@ function Home() {
     <main className="home">
       <Hero />
       <Features />
-      <About />
       <Gallery />
+      <About />
       <Faq />
       <Cta />
       <Contact />

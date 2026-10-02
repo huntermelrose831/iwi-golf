@@ -1,5 +1,11 @@
 .about {
   padding: 4rem 1.5rem;
+  background-image:
+    linear-gradient(rgba(22, 48, 32, 0.72), rgba(22, 48, 32, 0.72)),
+    url('../../assets/allan-nygren--xvKQuNtOhI-unsplash.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .about__inner {
