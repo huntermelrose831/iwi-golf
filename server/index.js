@@ -3,7 +3,8 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const Stripe = require('stripe')
-const nodemailer = require('nodemailer')
+const { chmod, readFile, rename, writeFile } = require('node:fs/promises')
+const path = require('node:path')
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 
@@ -13,19 +14,103 @@ const CURRENCY = process.env.STRIPE_CURRENCY || 'usd'
 const UNIT_AMOUNT = Number(process.env.STRIPE_UNIT_AMOUNT || 24900)
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
 const ORDER_NOTIFICATION_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL
+const MS_TENANT_ID = process.env.MS_TENANT_ID
+const MS_CLIENT_ID = process.env.MS_CLIENT_ID
+const MS_CLIENT_SECRET = process.env.MS_CLIENT_SECRET
+const MS_SENDER_EMAIL = process.env.MS_SENDER_EMAIL || 'admin@iwi.golf'
+const MS_REFRESH_TOKEN_PATH = path.join(__dirname, '.ms-refresh-token')
+let cachedAccessToken = null
+let accessTokenExpiresAt = 0
+let refreshInFlight = null
 
-const mailTransport =
-  process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS
-    ? nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 465),
-        secure: Number(process.env.SMTP_PORT || 465) === 465,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      })
-    : null
+async function getGraphAccessToken() {
+  if (cachedAccessToken && Date.now() < accessTokenExpiresAt) return cachedAccessToken
+  if (refreshInFlight) return refreshInFlight
+
+  refreshInFlight = (async () => {
+    if (!MS_TENANT_ID || !MS_CLIENT_ID || !MS_CLIENT_SECRET) {
+      throw new Error('Microsoft Graph credentials are not configured.')
+    }
+
+    let refreshToken
+    try {
+      refreshToken = (await readFile(MS_REFRESH_TOKEN_PATH, 'utf8')).trim()
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
+      refreshToken = process.env.MS_REFRESH_TOKEN
+    }
+
+    if (!refreshToken) throw new Error('Microsoft Graph refresh token is not configured.')
+
+    const tokenResponse = await fetch(
+      `https://login.microsoftonline.com/${encodeURIComponent(MS_TENANT_ID)}/oauth2/v2.0/token`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: MS_CLIENT_ID,
+          client_secret: MS_CLIENT_SECRET,
+          grant_type: 'refresh_token',
+          refresh_token: refreshToken,
+        }),
+      },
+    )
+    const tokenData = await tokenResponse.json()
+
+    if (!tokenResponse.ok || !tokenData.access_token) {
+      throw new Error(
+        `Microsoft token request failed (${tokenResponse.status}): ${tokenData.error_description || tokenData.error || 'unknown error'}`,
+      )
+    }
+
+    if (tokenData.refresh_token && tokenData.refresh_token !== refreshToken) {
+      const temporaryPath = `${MS_REFRESH_TOKEN_PATH}.${process.pid}.tmp`
+      await writeFile(temporaryPath, tokenData.refresh_token, { mode: 0o600 })
+      await chmod(temporaryPath, 0o600)
+      await rename(temporaryPath, MS_REFRESH_TOKEN_PATH)
+    }
+
+    cachedAccessToken = tokenData.access_token
+    accessTokenExpiresAt = Date.now() + Math.max(Number(tokenData.expires_in || 3600) - 60, 60) * 1000
+    return cachedAccessToken
+  })().finally(() => {
+    refreshInFlight = null
+  })
+
+  return refreshInFlight
+}
+
+async function sendGraphEmail({ subject, text, replyTo }) {
+  if (!ORDER_NOTIFICATION_EMAIL) throw new Error('Order notification email is not configured.')
+
+  const accessToken = await getGraphAccessToken()
+  const message = {
+    subject,
+    body: { contentType: 'Text', content: text },
+    toRecipients: [{ emailAddress: { address: ORDER_NOTIFICATION_EMAIL } }],
+  }
+
+  if (replyTo) {
+    message.replyTo = [{ emailAddress: { address: replyTo } }]
+  }
+
+  const response = await fetch(
+    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(MS_SENDER_EMAIL)}/sendMail`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message, saveToSentItems: true }),
+    },
+  )
+
+  if (response.status !== 202) {
+    const details = (await response.text()).slice(0, 1000)
+    throw new Error(`Microsoft Graph sendMail failed (${response.status}): ${details}`)
+  }
+}
 
 const app = express()
 
@@ -136,11 +221,10 @@ async function sendOrderNotificationEmail(order) {
     `Ship to: ${order.street || '—'}, ${order.city || '—'}, ${order.state || '—'} ${order.zip || '—'}`,
   ]
 
-  await mailTransport.sendMail({
-    from: process.env.SMTP_USER,
-    to: ORDER_NOTIFICATION_EMAIL,
+  await sendGraphEmail({
     subject: `New IWI order — ${order.course || 'Unknown course'} Hole ${order.hole || '?'}`,
     text: lines.join('\n'),
+    replyTo: order.email || undefined,
   })
 }
 
@@ -189,20 +273,15 @@ app.post('/api/contact-message', async (req, res) => {
     return res.status(400).json({ error: 'Invalid email address.' })
   }
 
-  if (!mailTransport || !ORDER_NOTIFICATION_EMAIL) {
-    return res.status(503).json({ error: 'Contact form is not configured yet.' })
-  }
-
   try {
-    await mailTransport.sendMail({
-      from: process.env.SMTP_USER,
-      to: ORDER_NOTIFICATION_EMAIL,
+    await sendGraphEmail({
       subject: 'New contact form message from iwi.golf',
       text: [`Email: ${email || '—'}`, `Phone: ${phone || '—'}`, '', message].join('\n'),
+      replyTo: email || undefined,
     })
     res.json({ sent: true })
   } catch (error) {
-    console.error('Failed to send contact message:', error.message)
+    console.error('Failed to send contact message via Microsoft Graph:', error.message)
     res.status(500).json({ error: 'Unable to send message.' })
   }
 })
