@@ -40,8 +40,22 @@ cd "$APP_DIR/server"
 npm ci
 
 if [ ! -f .env ]; then
-  cp .env.example .env
-  echo ">>> IMPORTANT: edit $APP_DIR/server/.env with your real STRIPE_SECRET_KEY and CLIENT_URL=https://$DOMAIN"
+  cat > .env <<EOF
+STRIPE_SECRET_KEY=sk_live_replace_with_secret_key
+CLIENT_URL=https://$DOMAIN
+PORT=4242
+STRIPE_CURRENCY=usd
+STRIPE_UNIT_AMOUNT=24900
+STRIPE_WEBHOOK_SECRET=whsec_replace_with_live_webhook_secret
+ORDER_NOTIFICATION_EMAIL=huntermelrose831@gmail.com
+SENDER_EMAIL=admin@iwi.golf
+MS_TENANT_ID=replace_with_microsoft_tenant_id
+MS_CLIENT_ID=replace_with_app_client_id
+MS_CLIENT_SECRET=replace_with_new_app_client_secret
+MS_REFRESH_TOKEN=replace_with_new_delegated_refresh_token
+EOF
+  chmod 600 .env
+  echo ">>> IMPORTANT: replace every *_replace_* value in $APP_DIR/server/.env before going live. Never commit this file."
 fi
 
 echo "==> Starting API with pm2"
@@ -59,5 +73,5 @@ systemctl reload nginx
 
 echo ""
 echo "==> Setup complete. Next steps:"
-echo "1. Edit $APP_DIR/server/.env with your real Stripe secret key, then: pm2 restart iwi-golf-api"
+echo "1. Edit $APP_DIR/server/.env with the client's live Stripe and Microsoft Graph credentials, then: pm2 restart iwi-golf-api"
 echo "2. Once iwi.golf's DNS points at this droplet, run: certbot --nginx -d $DOMAIN -d www.$DOMAIN"

@@ -17,7 +17,7 @@ const ORDER_NOTIFICATION_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL
 const MS_TENANT_ID = process.env.MS_TENANT_ID
 const MS_CLIENT_ID = process.env.MS_CLIENT_ID
 const MS_CLIENT_SECRET = process.env.MS_CLIENT_SECRET
-const MS_SENDER_EMAIL = process.env.MS_SENDER_EMAIL || 'admin@iwi.golf'
+const SENDER_EMAIL = process.env.SENDER_EMAIL || 'admin@iwi.golf'
 const MS_REFRESH_TOKEN_PATH = path.join(__dirname, '.ms-refresh-token')
 let cachedAccessToken = null
 let accessTokenExpiresAt = 0
@@ -95,7 +95,7 @@ async function sendGraphEmail({ subject, text, replyTo }) {
   }
 
   const response = await fetch(
-    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(MS_SENDER_EMAIL)}/sendMail`,
+    `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(SENDER_EMAIL)}/sendMail`,
     {
       method: 'POST',
       headers: {
