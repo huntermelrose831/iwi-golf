@@ -1,10 +1,10 @@
-require('dotenv').config()
+const path = require('node:path')
+require('dotenv').config({ path: path.join(__dirname, '.env') })
 
 const express = require('express')
 const cors = require('cors')
 const Stripe = require('stripe')
 const { chmod, readFile, rename, writeFile } = require('node:fs/promises')
-const path = require('node:path')
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 
