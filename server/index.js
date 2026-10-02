@@ -204,8 +204,6 @@ function pickOrderFields(body) {
 }
 
 async function sendOrderNotificationEmail(order) {
-  if (!mailTransport || !ORDER_NOTIFICATION_EMAIL) return
-
   const lines = [
     `Course: ${order.course || '—'}`,
     `Hole: ${order.hole || '—'}`,
