@@ -40,20 +40,22 @@ function Gallery() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
 
   useEffect(() => {
-    if (isPaused) return
+    if (isPaused || isLightboxOpen) return
 
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % SLIDE_COUNT)
     }, SLIDE_INTERVAL_MS)
 
     return () => window.clearInterval(timer)
-  }, [isPaused])
+  }, [isPaused, isLightboxOpen])
 
   useEffect(() => {
     if (!isLightboxOpen) return
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setIsLightboxOpen(false)
+      if (event.key === 'ArrowLeft') setActiveIndex((current) => (current - 1 + SLIDE_COUNT) % SLIDE_COUNT)
+      if (event.key === 'ArrowRight') setActiveIndex((current) => (current + 1) % SLIDE_COUNT)
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -159,12 +161,34 @@ function Gallery() {
           >
             ×
           </button>
+          <button
+            type="button"
+            className="gallery__lightbox-control gallery__lightbox-control--prev"
+            aria-label="Previous photo"
+            onClick={(event) => {
+              event.stopPropagation()
+              goToSlide(activeIndex - 1)
+            }}
+          >
+            ‹
+          </button>
           <img
             className="gallery__lightbox-image"
             src={CAROUSEL_SLIDES[activeIndex].src}
             alt="Completed IWI model, enlarged"
             onClick={(event) => event.stopPropagation()}
           />
+          <button
+            type="button"
+            className="gallery__lightbox-control gallery__lightbox-control--next"
+            aria-label="Next photo"
+            onClick={(event) => {
+              event.stopPropagation()
+              goToSlide(activeIndex + 1)
+            }}
+          >
+            ›
+          </button>
         </div>
       )}
     </section>
