@@ -91,9 +91,7 @@ function Contact() {
             <p className="contact__success">Thanks! We'll get back to you soon.</p>
           )}
           {status === 'error' && (
-            <p className="contact__error">
-              Something went wrong sending your message. Please try again.
-            </p>
+            <p className="contact__error">{errorMessage}</p>
           )}
 
           <button type="submit" className="contact__submit" disabled={isSubmitting}>

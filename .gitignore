@@ -17,6 +17,7 @@ dist-ssr
 !**/.env.example
 qrcodes
 server/.ms-refresh-token
+.playwright-mcp/
 
 # Editor directories and files
 .vscode/*
