@@ -47,6 +47,7 @@ export async function sendContactMessage(contact: ContactMessage): Promise<void>
   })
 
   if (!response.ok) {
-    throw new Error('Unable to send message. Please try again.')
+    const data: { error?: string } = await response.json().catch(() => ({}))
+    throw new Error(data.error || 'Unable to send message. Please try again.')
   }
 }

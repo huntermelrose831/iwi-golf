@@ -9,11 +9,19 @@ function Contact() {
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setIsSubmitting(true)
     setStatus('idle')
+
+    if (!email.trim() && !phone.trim()) {
+      setStatus('error')
+      setErrorMessage('Please provide an email or phone number so we can get back to you.')
+      return
+    }
+
+    setIsSubmitting(true)
 
     try {
       await sendContactMessage({ email, phone, message })
@@ -21,8 +29,11 @@ function Contact() {
       setEmail('')
       setPhone('')
       setMessage('')
-    } catch {
+    } catch (error) {
       setStatus('error')
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Something went wrong sending your message. Please try again.',
+      )
     } finally {
       setIsSubmitting(false)
     }
