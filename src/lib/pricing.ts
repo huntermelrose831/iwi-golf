@@ -4,8 +4,8 @@
 // Add course names to LOCAL_PICKUP_COURSES to enable free local pickup for them.
 // ---------------------------------------------------------------------------
 
-/** Base product price in cents (e.g. 24900 = $249.00) */
-export const PRODUCT_PRICE_CENTS = 24900
+/** Base product price in cents (e.g. 5000 = $50.00) */
+export const PRODUCT_PRICE_CENTS = 5000
 
 export type ShippingMethod = 'pickup' | 'standard'
 
@@ -28,7 +28,7 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
     id: 'standard',
     label: 'Standard Shipping',
     description: 'Flat rate — same price anywhere in the US.',
-    priceCents: 5000,
+    priceCents: 1500,
   },
 ]
 

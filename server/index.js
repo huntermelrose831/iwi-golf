@@ -12,8 +12,8 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 const PORT = process.env.PORT || 4242
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 const CURRENCY = process.env.STRIPE_CURRENCY || 'usd'
-const PRODUCT_PRICE_CENTS = Number(process.env.STRIPE_UNIT_AMOUNT || 24900)
-const SHIPPING_RATES = { pickup: 0, standard: 5000 }
+const PRODUCT_PRICE_CENTS = Number(process.env.STRIPE_UNIT_AMOUNT || 5000)
+const SHIPPING_RATES = { pickup: 0, standard: 1500 }
 
 function getTotalCents(shippingMethod) {
   const shipping = SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
