@@ -99,6 +99,88 @@
   cursor: not-allowed;
 }
 
+.customer-info-form__shipping-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.customer-info-form__shipping-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-border);
+  background-color: var(--color-surface-raised);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+
+.customer-info-form__shipping-option:hover {
+  border-color: var(--color-accent);
+}
+
+.customer-info-form__shipping-option--selected {
+  border-color: var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface-raised));
+}
+
+.customer-info-form__shipping-radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+
+.customer-info-form__shipping-option--selected .customer-info-form__shipping-radio {
+  border-color: var(--color-accent);
+}
+
+.customer-info-form__shipping-radio-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: transparent;
+  transition: background-color 0.15s;
+}
+
+.customer-info-form__shipping-option--selected .customer-info-form__shipping-radio-dot {
+  background-color: var(--color-accent);
+}
+
+.customer-info-form__shipping-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+}
+
+.customer-info-form__shipping-label {
+  color: var(--color-text-light);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.customer-info-form__shipping-desc {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.customer-info-form__shipping-price {
+  color: var(--color-text-light);
+  font-weight: 600;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
 @media (max-width: 640px) {
   .customer-info-form__row {
     grid-template-columns: 1fr;

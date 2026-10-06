@@ -5,6 +5,12 @@ import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-
 import type { OrderDetails } from '../../lib/api'
 import { createPaymentIntent } from '../../lib/api'
 import { stripePromise } from '../../lib/stripe'
+import {
+  PRODUCT_PRICE_CENTS,
+  getShippingOption,
+  getTotalCents,
+  formatUSD,
+} from '../../lib/pricing'
 import './PaymentReview.css'
 
 type PaymentReviewProps = {
@@ -15,6 +21,9 @@ type PaymentReviewProps = {
 function PaymentReview({ order, onBack }: PaymentReviewProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const shippingOption = getShippingOption(order.shippingMethod)
+  const total = getTotalCents(order.shippingMethod)
 
   useEffect(() => {
     let isActive = true
@@ -51,17 +60,42 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
           <dt className="payment-review__term">Golfer</dt>
           <dd className="payment-review__value">{order.golferName || '—'}</dd>
         </div>
-        <div className="payment-review__row">
-          <dt className="payment-review__term">Ship to</dt>
-          <dd className="payment-review__value">
-            {order.street}, {order.city}, {order.state} {order.zip}
-          </dd>
-        </div>
+        {order.shippingMethod === 'standard' && (
+          <div className="payment-review__row">
+            <dt className="payment-review__term">Ship to</dt>
+            <dd className="payment-review__value">
+              {order.street}, {order.city}, {order.state} {order.zip}
+            </dd>
+          </div>
+        )}
+        {order.shippingMethod === 'pickup' && (
+          <div className="payment-review__row">
+            <dt className="payment-review__term">Delivery</dt>
+            <dd className="payment-review__value">Local Pickup</dd>
+          </div>
+        )}
         <div className="payment-review__row">
           <dt className="payment-review__term">Contact</dt>
           <dd className="payment-review__value">
             {order.name} · {order.email}
           </dd>
+        </div>
+      </dl>
+
+      <dl className="payment-review__price-breakdown">
+        <div className="payment-review__row">
+          <dt className="payment-review__term">3D Hole-in-One Model</dt>
+          <dd className="payment-review__value">{formatUSD(PRODUCT_PRICE_CENTS)}</dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">{shippingOption.label}</dt>
+          <dd className="payment-review__value">
+            {shippingOption.priceCents === 0 ? 'Free' : formatUSD(shippingOption.priceCents)}
+          </dd>
+        </div>
+        <div className="payment-review__row payment-review__row--total">
+          <dt className="payment-review__term payment-review__term--total">Total</dt>
+          <dd className="payment-review__value payment-review__value--total">{formatUSD(total)}</dd>
         </div>
       </dl>
 

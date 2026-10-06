@@ -12,8 +12,16 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 const PORT = process.env.PORT || 4242
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 const CURRENCY = process.env.STRIPE_CURRENCY || 'usd'
-const UNIT_AMOUNT = Number(process.env.STRIPE_UNIT_AMOUNT || 24900)
+const PRODUCT_PRICE_CENTS = Number(process.env.STRIPE_UNIT_AMOUNT || 24900)
+const SHIPPING_RATES = { pickup: 0, standard: 5000 }
+
+function getTotalCents(shippingMethod) {
+  const shipping = SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
+  return PRODUCT_PRICE_CENTS + shipping
+}
+
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
+
 const ORDER_NOTIFICATION_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL
 const MS_TENANT_ID = process.env.MS_TENANT_ID
 const MS_CLIENT_ID = process.env.MS_CLIENT_ID
@@ -266,6 +274,7 @@ function pickOrderFields(body) {
     'city',
     'state',
     'zip',
+    'shippingMethod',
   ]
 
   const order = {}
@@ -290,6 +299,7 @@ async function sendOrderNotificationEmail(order) {
     `Customer: ${order.name || '—'}`,
     `Email: ${order.email || '—'}`,
     `Phone: ${order.phone || '—'}`,
+    `Shipping: ${order.shippingMethod === 'pickup' ? 'Local Pickup' : 'Standard Shipping'}`,
     `Ship to: ${order.street || '—'}, ${order.city || '—'}, ${order.state || '—'} ${order.zip || '—'}`,
   ]
 
@@ -316,7 +326,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: UNIT_AMOUNT,
+      amount: getTotalCents(order.shippingMethod),
       currency: CURRENCY,
       // Which methods appear here (card, Apple/Google Pay, etc.) is controlled by your Stripe Dashboard settings.
       automatic_payment_methods: { enabled: true },

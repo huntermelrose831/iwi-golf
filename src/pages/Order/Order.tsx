@@ -24,6 +24,7 @@ const INITIAL_ORDER: OrderDetails = {
   city: '',
   state: '',
   zip: '',
+  shippingMethod: 'standard',
 }
 
 const STEP_LABELS = ['Your Personalized Celebration', 'Order Information', 'Payment']

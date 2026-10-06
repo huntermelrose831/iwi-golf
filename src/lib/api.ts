@@ -1,5 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4242'
 
+import type { ShippingMethod } from './pricing'
+
 export type OrderDetails = {
   course: string
   hole: string
@@ -16,6 +18,7 @@ export type OrderDetails = {
   city: string
   state: string
   zip: string
+  shippingMethod: ShippingMethod
 }
 
 export async function createPaymentIntent(order: OrderDetails): Promise<string> {
