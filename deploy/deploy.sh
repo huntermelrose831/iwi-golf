@@ -11,4 +11,4 @@ npm run build
 
 cd "$APP_DIR/server"
 npm ci
-pm2 restart iwi-golf-api
+pm2 restart iwi-golf-api --update-env
