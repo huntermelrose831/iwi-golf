@@ -21,7 +21,7 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
   {
     id: 'pickup',
     label: 'Local Pickup',
-    description: "We'll coordinate delivery with you directly.",
+    description: "Local pickup available in Santa Cruz, CA — we'll coordinate with you directly.",
     priceCents: 0,
   },
   {
