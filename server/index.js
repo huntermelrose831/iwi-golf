@@ -96,14 +96,17 @@ async function getGraphAccessToken() {
   return refreshInFlight
 }
 
-async function sendGraphEmail({ subject, text, replyTo }) {
+async function sendGraphEmail({ subject, text, html, replyTo, toAddress }) {
   if (!ORDER_NOTIFICATION_EMAIL) throw new Error('Order notification email is not configured.')
 
   const accessToken = await getGraphAccessToken()
   const message = {
     subject,
-    body: { contentType: 'Text', content: text },
-    toRecipients: [{ emailAddress: { address: ORDER_NOTIFICATION_EMAIL } }],
+    body: {
+      contentType: html ? 'HTML' : 'Text',
+      content: html || text,
+    },
+    toRecipients: [{ emailAddress: { address: toAddress || ORDER_NOTIFICATION_EMAIL } }],
   }
 
   if (replyTo) {
@@ -153,6 +156,9 @@ app.post(
       const order = event.data.object.metadata || {}
       await sendOrderNotificationEmail(order).catch((error) => {
         console.error('Failed to send order notification email:', error.message)
+      })
+      await sendCustomerReceiptEmail(order).catch((error) => {
+        console.error('Failed to send customer receipt email:', error.message)
       })
     }
 
@@ -287,6 +293,9 @@ function pickOrderFields(body) {
 }
 
 async function sendOrderNotificationEmail(order) {
+  const shippingCost = order.shippingMethod === 'pickup' ? 0 : 15
+  const totalCost = 50 + shippingCost
+
   const lines = [
     `Course: ${order.course || '—'}`,
     `Hole: ${order.hole || '—'}`,
@@ -301,6 +310,10 @@ async function sendOrderNotificationEmail(order) {
     `Phone: ${order.phone || '—'}`,
     `Shipping: ${order.shippingMethod === 'pickup' ? 'Local Pickup' : 'Standard Shipping'}`,
     `Ship to: ${order.street || '—'}, ${order.city || '—'}, ${order.state || '—'} ${order.zip || '—'}`,
+    '',
+    `Product: $50.00`,
+    `Shipping: $${shippingCost.toFixed(2)}`,
+    `Total: $${totalCost.toFixed(2)}`,
   ]
 
   await sendGraphEmail({
@@ -309,6 +322,61 @@ async function sendOrderNotificationEmail(order) {
     replyTo: order.email || undefined,
   })
 }
+
+async function sendCustomerReceiptEmail(order) {
+  if (!order.email) return
+
+  const shippingCost = order.shippingMethod === 'pickup' ? 0 : 15
+  const totalCost = 50 + shippingCost
+
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+      <h1 style="color: #2c3e50;">Thanks for your order!</h1>
+      <p>Hi ${order.name || 'there'},</p>
+      <p>We've received your order for the IWI 3D Printed Hole-in-One Model. We'll start crafting it soon.</p>
+      
+      <h2 style="color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">Order Details</h2>
+      <ul style="list-style: none; padding: 0;">
+        <li><strong>Course:</strong> ${order.course || '—'}</li>
+        <li><strong>Hole:</strong> ${order.hole || '—'}</li>
+        <li><strong>Golfer:</strong> ${order.golferName || '—'}</li>
+        <li><strong>Date:</strong> ${order.date || '—'}</li>
+      </ul>
+
+      <h2 style="color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">Summary</h2>
+      <table style="width: 100%; text-align: left; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 8px 0; border-bottom: 1px solid #eee;">3D Hole-in-One Model</td>
+          <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">$50.00</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${order.shippingMethod === 'pickup' ? 'Local Pickup' : 'Standard Shipping'}</td>
+          <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">$${shippingCost.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px 0; font-weight: bold; font-size: 1.1em;">Total</td>
+          <td style="padding: 12px 0; font-weight: bold; font-size: 1.1em; text-align: right;">$${totalCost.toFixed(2)}</td>
+        </tr>
+      </table>
+
+      ${order.shippingMethod === 'pickup' 
+        ? `<p style="margin-top: 30px;"><strong>Local Pickup:</strong> We'll reach out to coordinate a pickup time.</p>`
+        : `<p style="margin-top: 30px;"><strong>Shipping Address:</strong><br>${order.street}<br>${order.city}, ${order.state} ${order.zip}</p>`
+      }
+      
+      <p style="margin-top: 30px; font-size: 0.9em; color: #666;">
+        If you have any questions, reply to this email or contact us through our website.
+      </p>
+    </div>
+  `
+
+  await sendGraphEmail({
+    subject: `Your IWI Golf Order Confirmation`,
+    html,
+    toAddress: order.email,
+  })
+}
+
 
 app.post('/api/create-payment-intent', async (req, res) => {
   const order = pickOrderFields(req.body)
@@ -330,7 +398,6 @@ app.post('/api/create-payment-intent', async (req, res) => {
       currency: CURRENCY,
       // Which methods appear here (card, Apple/Google Pay, etc.) is controlled by your Stripe Dashboard settings.
       automatic_payment_methods: { enabled: true },
-      receipt_email: order.email,
       description: `IWI 3D Printed Hole-in-One Model — ${order.course} — Hole ${order.hole} — ${order.golferName}`,
       metadata: order,
     })
