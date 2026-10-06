@@ -4,6 +4,7 @@ require('dotenv').config({ path: path.join(__dirname, '.env') })
 const express = require('express')
 const cors = require('cors')
 const Stripe = require('stripe')
+const crypto = require('node:crypto')
 const { chmod, readFile, rename, writeFile } = require('node:fs/promises')
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
@@ -19,6 +20,13 @@ const MS_CLIENT_ID = process.env.MS_CLIENT_ID
 const MS_CLIENT_SECRET = process.env.MS_CLIENT_SECRET
 const SENDER_EMAIL = process.env.SENDER_EMAIL || 'admin@iwi.golf'
 const MS_REFRESH_TOKEN_PATH = path.join(__dirname, '.ms-refresh-token')
+
+// Password-only site gate: visitors enter just a password (no username) before
+// reaching the app. See public/gate.html and the nginx auth_request config.
+const SITE_GATE_PASSWORD = process.env.SITE_GATE_PASSWORD
+const SITE_GATE_SECRET = process.env.SITE_GATE_SECRET
+const GATE_COOKIE_NAME = 'iwi_gate'
+const GATE_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000 // 30 days
 let cachedAccessToken = null
 let accessTokenExpiresAt = 0
 let refreshInFlight = null
@@ -146,6 +154,72 @@ app.post(
 
 app.use(cors({ origin: CLIENT_URL }))
 app.use(express.json({ limit: '10kb' }))
+
+// Signs an expiry-stamped token so the gate cookie can't be forged or replayed past its TTL.
+function signGateToken() {
+  const expiresAt = Date.now() + GATE_TOKEN_TTL_MS
+  const signature = crypto.createHmac('sha256', SITE_GATE_SECRET).update(String(expiresAt)).digest('hex')
+  return `${expiresAt}.${signature}`
+}
+
+function isValidGateToken(token) {
+  if (!SITE_GATE_SECRET || !token) return false
+  const [expiresAt, signature] = String(token).split('.')
+  if (!expiresAt || !signature) return false
+
+  const expected = crypto.createHmac('sha256', SITE_GATE_SECRET).update(expiresAt).digest('hex')
+  const actualBuffer = Buffer.from(signature)
+  const expectedBuffer = Buffer.from(expected)
+  if (actualBuffer.length !== expectedBuffer.length) return false
+  if (!crypto.timingSafeEqual(actualBuffer, expectedBuffer)) return false
+
+  return Number(expiresAt) > Date.now()
+}
+
+function parseCookies(header) {
+  const cookies = {}
+  if (!header) return cookies
+  for (const part of header.split(';')) {
+    const separatorIndex = part.indexOf('=')
+    if (separatorIndex === -1) continue
+    const key = part.slice(0, separatorIndex).trim()
+    const value = part.slice(separatorIndex + 1).trim()
+    cookies[key] = decodeURIComponent(value)
+  }
+  return cookies
+}
+
+// Checked by nginx (auth_request) before every page load; 200 lets the request through, 401 bounces to the gate.
+app.get('/api/gate/check', (req, res) => {
+  const cookies = parseCookies(req.headers.cookie)
+  if (isValidGateToken(cookies[GATE_COOKIE_NAME])) {
+    return res.status(200).end()
+  }
+  res.status(401).end()
+})
+
+// Password-only login: no username field, just a shared password set via SITE_GATE_PASSWORD.
+app.post('/api/gate/login', (req, res) => {
+  if (!SITE_GATE_PASSWORD || !SITE_GATE_SECRET) {
+    return res.status(503).json({ error: 'Site gate is not configured.' })
+  }
+
+  const provided = Buffer.from(sanitizeString(req.body?.password))
+  const expected = Buffer.from(SITE_GATE_PASSWORD)
+  const matches = provided.length === expected.length && crypto.timingSafeEqual(provided, expected)
+
+  if (!matches) {
+    return res.status(401).json({ error: 'Incorrect password.' })
+  }
+
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https'
+  const token = signGateToken()
+  res.setHeader(
+    'Set-Cookie',
+    `${GATE_COOKIE_NAME}=${token}; Path=/; Max-Age=${Math.floor(GATE_TOKEN_TTL_MS / 1000)}; HttpOnly; SameSite=Lax${isHttps ? '; Secure' : ''}`,
+  )
+  res.json({ ok: true })
+})
 
 const MAX_FIELD_LENGTH = 200
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>IWI.golf — Enter Password</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #15301f;
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        color: #f4f4f0;
+      }
+      .gate-card {
+        width: min(90vw, 360px);
+        padding: 2rem;
+        border-radius: 12px;
+        background-color: #1d3b26;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        text-align: center;
+      }
+      .gate-card h1 {
+        font-size: 1.25rem;
+        margin: 0 0 1.25rem;
+      }
+      .gate-card input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background-color: #15301f;
+        color: #f4f4f0;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+      .gate-card button {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 999px;
+        border: none;
+        background-color: #3e7a4f;
+        color: #f4f4f0;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      .gate-card button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .gate-card button:hover:not(:disabled) {
+        background-color: #4c8f60;
+      }
+      .gate-error {
+        color: #ff8a8a;
+        font-size: 0.85rem;
+        min-height: 1.1em;
+        margin: 0 0 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gate-card">
+      <h1>Enter password to continue</h1>
+      <form id="gate-form" autocomplete="off">
+        <p class="gate-error" id="gate-error"></p>
+        <input
+          type="password"
+          id="gate-password"
+          name="password"
+          placeholder="Password"
+          autofocus
+          required
+        />
+        <button type="submit" id="gate-submit">Enter</button>
+      </form>
+    </div>
+    <script src="/gate.js"></script>
+  </body>
+</html>

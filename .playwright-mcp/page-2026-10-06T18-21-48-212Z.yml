@@ -1,0 +1,83 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - link "IWI.golf IWI.golf" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img "IWI.golf" [ref=e7]
+        - generic [ref=e8]: IWI.golf
+      - link "Order Yours" [ref=e9] [cursor=pointer]:
+        - /url: /order
+  - main [ref=e10]:
+    - generic [ref=e11]:
+      - list [ref=e12]:
+        - listitem [ref=e13]: Your Personalized Celebration
+        - listitem [ref=e14]: Order Information
+        - listitem [ref=e15]: Payment
+      - generic [ref=e17]:
+        - heading "Your Personalized Celebration" [level=2] [ref=e18]
+        - generic [ref=e19]:
+          - generic [ref=e20]: "* Golf Course"
+          - combobox "* Golf Course" [ref=e21]:
+            - option "Select a course…" [disabled] [selected]
+            - option "DeLaveaga Golf Course"
+            - option "Los Lagos Golf Course"
+            - option "Moffett Field Golf Club"
+            - option "Seabright Country Club"
+            - option "Seascape Golf Club"
+            - option "Stanford University Golf Course"
+            - option "Other"
+        - generic [ref=e22]:
+          - generic [ref=e23]:
+            - generic [ref=e24]: "* Hole Number"
+            - textbox "* Hole Number" [ref=e25]:
+              - /placeholder: e.g. 7
+          - generic [ref=e26]:
+            - generic [ref=e27]: "* Golfer's Name"
+            - textbox "* Golfer's Name" [ref=e28]:
+              - /placeholder: e.g. Jane Golfer
+          - generic [ref=e29]:
+            - generic [ref=e30]: Hole-in-One Date
+            - button "Choose hole-in-one date" [ref=e31] [cursor=pointer]
+            - textbox [aria-hidden] [ref=e35]
+            - generic [ref=e36]: Had your ace years ago? Enter the full date, any year works.
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]: Yards
+            - textbox "Yards" [ref=e40]:
+              - /placeholder: e.g. 178
+          - generic [ref=e41]:
+            - generic [ref=e42]: Club Used
+            - combobox "Club Used" [ref=e43]:
+              - option "Select a club…" [disabled] [selected]
+              - option "Driver"
+              - option "3 Wood"
+              - option "5 Wood"
+              - option "Hybrid"
+              - option "2 Iron"
+              - option "3 Iron"
+              - option "4 Iron"
+              - option "5 Iron"
+              - option "6 Iron"
+              - option "7 Iron"
+              - option "8 Iron"
+              - option "9 Iron"
+              - option "Pitching Wedge"
+              - option "Gap Wedge"
+              - option "Sand Wedge"
+              - option "Lob Wedge"
+              - option "Other"
+        - generic [ref=e44]:
+          - paragraph [ref=e45]: Flag placement
+          - paragraph [ref=e46]: By default the flag sits at the center of the green. The green below is just a typical green. Use the arrows to nudge the flag to roughly where the pin was.
+          - generic [ref=e47]:
+            - button "Move flag up" [ref=e48] [cursor=pointer]: ↑
+            - button "Move flag left" [ref=e49] [cursor=pointer]: ←
+            - button "Move flag right" [ref=e50] [cursor=pointer]: →
+            - button "Move flag down" [ref=e51] [cursor=pointer]: ↓
+            - generic [aria-hidden] [ref=e54]: ⚑
+            - button "Reset to center" [ref=e55] [cursor=pointer]
+        - 'button "Next: Order Information" [disabled] [ref=e56]'
+  - contentinfo [ref=e57]:
+    - generic [ref=e58]:
+      - paragraph [ref=e59]: © Copyright 2026, IWI Enterprise
+      - paragraph [ref=e60]: v1.0.0

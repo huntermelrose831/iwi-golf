@@ -18,7 +18,7 @@
 
 .hole-details-form__row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -37,7 +37,18 @@
 .hole-details-form__hint {
   color: var(--color-text-muted);
   font-size: 0.75rem;
-  margin-right: 42px;
+}
+
+.hole-details-form__field--date {
+  position: relative;
+}
+
+.hole-details-form__hint--date {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.4rem;
 }
 
 .hole-details-form__required {
@@ -52,6 +63,7 @@
   color: var(--color-text-light);
   font-size: 1rem;
   color-scheme: dark;
+  margin-right: 0;
 }
 
 .hole-details-form__input::-webkit-calendar-picker-indicator {
@@ -63,8 +75,49 @@
   background-color: #ffffff;
 }
 
-.hole-details-form__input--date {
-  width: 66%;
+.hole-details-form__date-button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-light);
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.hole-details-form__date-button:hover {
+  border-color: var(--color-accent);
+}
+
+.hole-details-form__date-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.hole-details-form__date-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.hole-details-form__date-input-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .hole-details-form__input:focus {

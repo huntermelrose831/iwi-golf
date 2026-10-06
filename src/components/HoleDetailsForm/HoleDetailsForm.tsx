@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import FlagPlacement from '../FlagPlacement/FlagPlacement'
 import type { FlagPosition } from '../FlagPlacement/FlagPlacement'
@@ -23,6 +23,7 @@ const CLUB_OPTIONS = [
   'Gap Wedge',
   'Sand Wedge',
   'Lob Wedge',
+  'Other'
 ]
 
 type HoleDetailsFormProps = {
@@ -32,15 +33,37 @@ type HoleDetailsFormProps = {
   onNext: () => void
 }
 
+// order.date is stored as yyyy-mm-dd (native <input type="date"> format); shown to the user as mm/dd/yyyy.
+function formatDisplayDate(isoDate: string) {
+  if (!isoDate) return ''
+  const [year, month, day] = isoDate.split('-')
+  if (!year || !month || !day) return ''
+  return `${month}/${day}/${year}`
+}
+
 function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDetailsFormProps) {
   const [isCustomCourse, setIsCustomCourse] = useState(
     Boolean(order.course) && !COURSE_OPTIONS.includes(order.course),
   )
+  const [isCustomClub, setIsCustomClub] = useState(
+    Boolean(order.club) && !CLUB_OPTIONS.includes(order.club),
+  )
+  const dateInputRef = useRef<HTMLInputElement>(null)
 
   const handleInput = (field: keyof OrderDetails) => (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     onFieldChange(field, event.currentTarget.value)
+  }
+
+  const openDatePicker = () => {
+    const input = dateInputRef.current
+    if (!input) return
+    if (typeof input.showPicker === 'function') {
+      input.showPicker()
+    } else {
+      input.focus()
+    }
   }
 
   const handleCourseSelect = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -54,10 +77,20 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
     }
   }
 
+  const handleClubSelect = (event: ChangeEvent<HTMLSelectElement>) => {
+    const value = event.currentTarget.value
+    if (value === 'Other') {
+      setIsCustomClub(true)
+      onFieldChange('club', '')
+    } else {
+      setIsCustomClub(false)
+      onFieldChange('club', value)
+    }
+  }
+
   return (
     <div className="hole-details-form">
       <h2 className="hole-details-form__heading">Your Personalized Celebration</h2>
-      <p className="hole-details-form__subtext">Course, hole, flag</p>
 
       <label className="hole-details-form__field">
         <span className="hole-details-form__label">
@@ -125,16 +158,37 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
           />
         </label>
 
-        <label className="hole-details-form__field">
+        <label className="hole-details-form__field hole-details-form__field--date">
           <span className="hole-details-form__label">Hole-in-One Date</span>
+          <button
+            type="button"
+            className="hole-details-form__date-button"
+            onClick={openDatePicker}
+            aria-label="Choose hole-in-one date"
+          >
+            <svg
+              className="hole-details-form__date-icon"
+              viewBox="0 0 20 20"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M3 8h14" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M6.5 2.5v3M13.5 2.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+            {order.date && <span>{formatDisplayDate(order.date)}</span>}
+          </button>
           <input
+            ref={dateInputRef}
             type="date"
-            className="hole-details-form__input hole-details-form__input--date"
+            className="hole-details-form__date-input-hidden"
             value={order.date}
             onChange={handleInput('date')}
+            tabIndex={-1}
+            aria-hidden="true"
           />
-          <span className="hole-details-form__hint">
-            Had your ace years ago? Enter the full date, any year works.
+          <span className="hole-details-form__hint hole-details-form__hint--date">
+            Had your ace years ago? Click the box above to select the date, any year works.
           </span>
         </label>
       </div>
@@ -155,8 +209,8 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
           <span className="hole-details-form__label">Club Used</span>
           <select
             className="hole-details-form__input"
-            value={order.club}
-            onChange={handleInput('club')}
+            value={isCustomClub ? 'Other' : order.club}
+            onChange={handleClubSelect}
           >
             <option value="" disabled>
               Select a club…
@@ -169,6 +223,19 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
           </select>
         </label>
       </div>
+
+      {isCustomClub && (
+        <label className="hole-details-form__field">
+          <span className="hole-details-form__label">Club Name</span>
+          <input
+            className="hole-details-form__input"
+            placeholder="Enter your club"
+            value={order.club}
+            onChange={handleInput('club')}
+            maxLength={200}
+          />
+        </label>
+      )}
 
       <FlagPlacement value={{ x: order.flagX, y: order.flagY }} onChange={onFlagChange} />
 

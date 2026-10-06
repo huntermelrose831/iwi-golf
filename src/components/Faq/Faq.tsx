@@ -5,7 +5,7 @@ const FAQ_ITEMS = [
   {
     question: 'What material is the model printed in, and is it okay outdoors?',
     answer:
-      "Models are 3D printed in PLA, a durable plastic that looks great on a shelf, desk, or mantel indoors. PLA can soften or warp with prolonged direct sunlight or heat, so if you're planning to display yours outdoors or somewhere that gets a lot of sun, let us know through the contact form below and we'll advise on the best setup for your space.",
+      "Models are 3D printed in PLA, a durable plastic that looks great on a shelf, desk, or mantel. This is an indoor-use item only — don't put it outside, as PLA can soften and warp when exposed to direct sunlight or heat.",
   },
   {
     question: 'Is the fringe and surrounding area printed exactly to scale?',

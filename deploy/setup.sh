@@ -53,6 +53,8 @@ MS_TENANT_ID=replace_with_microsoft_tenant_id
 MS_CLIENT_ID=replace_with_app_client_id
 MS_CLIENT_SECRET=replace_with_new_app_client_secret
 MS_REFRESH_TOKEN=replace_with_new_delegated_refresh_token
+SITE_GATE_PASSWORD=replace_with_a_strong_shared_password
+SITE_GATE_SECRET=replace_with_a_long_random_string
 EOF
   chmod 600 .env
   echo ">>> IMPORTANT: replace every *_replace_* value in $APP_DIR/server/.env before going live. Never commit this file."
