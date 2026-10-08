@@ -25,8 +25,8 @@ const CAROUSEL_SLIDES = [
 
 const SLIDE_COUNT = CAROUSEL_SLIDES.length
 
-// 5 copies so the track is always long enough no matter how far the user navigates.
-const COPY_COUNT = 5
+// 11 copies — 77 slides of track — so the edge is practically unreachable.
+const COPY_COUNT = 11
 
 // Start in the middle copy so there's room to go backward too.
 const INITIAL_INDEX = SLIDE_COUNT * Math.floor(COPY_COUNT / 2)
