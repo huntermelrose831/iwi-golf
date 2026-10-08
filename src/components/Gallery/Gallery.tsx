@@ -25,25 +25,34 @@ const CAROUSEL_SLIDES = [
 
 const SLIDE_COUNT = CAROUSEL_SLIDES.length
 
-// Three copies of the slides so the track always has neighbors on both sides, no matter the active index.
-const LOOPED_SLIDES = [0, 1, 2].flatMap((copy) =>
+// 5 copies so the track is always long enough no matter how far the user navigates.
+const COPY_COUNT = 5
+
+// Start in the middle copy so there's room to go backward too.
+const INITIAL_INDEX = SLIDE_COUNT * Math.floor(COPY_COUNT / 2)
+
+const EXTENDED_SLIDES = Array.from({ length: COPY_COUNT }, (_, copy) =>
   CAROUSEL_SLIDES.map((slide, index) => ({
     ...slide,
     key: `${copy}-${slide.id}`,
-    originalIndex: index,
+    absoluteIndex: copy * SLIDE_COUNT + index,
   })),
-)
+).flat()
 
 function Gallery() {
-  const [activeIndex, setActiveIndex] = useState(0)
+  // activeIndex is never clamped — it just keeps growing or shrinking.
+  const [activeIndex, setActiveIndex] = useState(INITIAL_INDEX)
   const [isPaused, setIsPaused] = useState(false)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+
+  // The visual dot / active-slide indicator is derived from the raw index.
+  const activeDotIndex = activeIndex % SLIDE_COUNT
 
   useEffect(() => {
     if (isPaused || isLightboxOpen) return
 
     const timer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % SLIDE_COUNT)
+      setActiveIndex((current) => current + 1)
     }, SLIDE_INTERVAL_MS)
 
     return () => window.clearInterval(timer)
@@ -54,29 +63,30 @@ function Gallery() {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setIsLightboxOpen(false)
-      if (event.key === 'ArrowLeft') setActiveIndex((current) => (current - 1 + SLIDE_COUNT) % SLIDE_COUNT)
-      if (event.key === 'ArrowRight') setActiveIndex((current) => (current + 1) % SLIDE_COUNT)
+      if (event.key === 'ArrowLeft') setActiveIndex((current) => current - 1)
+      if (event.key === 'ArrowRight') setActiveIndex((current) => current + 1)
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isLightboxOpen])
 
-  const goToSlide = (index: number) => {
-    setActiveIndex((index + SLIDE_COUNT) % SLIDE_COUNT)
-  }
-
-  const handleSlideClick = (index: number) => {
-    if (index === activeIndex) {
+  const handleSlideClick = (absoluteIndex: number) => {
+    if (absoluteIndex === activeIndex) {
       setIsLightboxOpen(true)
     } else {
-      goToSlide(index)
+      setActiveIndex(absoluteIndex)
     }
   }
 
-  // Center on the middle copy of the loop so there's always a full set of neighbors either side.
-  const renderIndex = SLIDE_COUNT + activeIndex
-  const trackOffset = renderIndex * ITEM_STEP + ITEM_WIDTH / 2
+  const handleDotClick = (dotIndex: number) => {
+    // Move to the nearest copy of this slide relative to the current position.
+    const diff = ((dotIndex - activeDotIndex) % SLIDE_COUNT + SLIDE_COUNT) % SLIDE_COUNT
+    const step = diff <= SLIDE_COUNT / 2 ? diff : diff - SLIDE_COUNT
+    setActiveIndex((current) => current + step)
+  }
+
+  const trackOffset = activeIndex * ITEM_STEP + ITEM_WIDTH / 2
 
   return (
     <section className="gallery">
@@ -93,21 +103,21 @@ We'll make the model.</h2>
             className="gallery__track"
             style={{ transform: `translateX(calc(50% - ${trackOffset}px))` }}
           >
-            {LOOPED_SLIDES.map((slide) => (
+            {EXTENDED_SLIDES.map((slide) => (
               <button
                 type="button"
                 key={slide.key}
                 className={
-                  slide.originalIndex === activeIndex
+                  slide.absoluteIndex === activeIndex
                     ? 'gallery__slide gallery__slide--active'
                     : 'gallery__slide'
                 }
                 style={{ width: `${ITEM_WIDTH}px`, marginRight: `${ITEM_GAP}px` }}
-                onClick={() => handleSlideClick(slide.originalIndex)}
+                onClick={() => handleSlideClick(slide.absoluteIndex)}
                 aria-label={
-                  slide.originalIndex === activeIndex
+                  slide.absoluteIndex === activeIndex
                     ? 'Enlarge photo'
-                    : `Show photo ${slide.originalIndex + 1}`
+                    : `Show photo ${(slide.absoluteIndex % SLIDE_COUNT) + 1}`
                 }
               >
                 <img className="gallery__slide-image" src={slide.src} alt="Completed IWI model" />
@@ -119,7 +129,7 @@ We'll make the model.</h2>
             type="button"
             className="gallery__control gallery__control--prev"
             aria-label="Previous slide"
-            onClick={() => goToSlide(activeIndex - 1)}
+            onClick={() => setActiveIndex((current) => current - 1)}
           >
             ‹
           </button>
@@ -127,7 +137,7 @@ We'll make the model.</h2>
             type="button"
             className="gallery__control gallery__control--next"
             aria-label="Next slide"
-            onClick={() => goToSlide(activeIndex + 1)}
+            onClick={() => setActiveIndex((current) => current + 1)}
           >
             ›
           </button>
@@ -140,9 +150,9 @@ We'll make the model.</h2>
               key={slide.id}
               aria-label={`Go to slide ${index + 1}`}
               className={
-                index === activeIndex ? 'gallery__dot gallery__dot--active' : 'gallery__dot'
+                index === activeDotIndex ? 'gallery__dot gallery__dot--active' : 'gallery__dot'
               }
-              onClick={() => goToSlide(index)}
+              onClick={() => handleDotClick(index)}
             />
           ))}
         </div>
@@ -168,14 +178,14 @@ We'll make the model.</h2>
             aria-label="Previous photo"
             onClick={(event) => {
               event.stopPropagation()
-              goToSlide(activeIndex - 1)
+              setActiveIndex((current) => current - 1)
             }}
           >
             ‹
           </button>
           <img
             className="gallery__lightbox-image"
-            src={CAROUSEL_SLIDES[activeIndex].src}
+            src={CAROUSEL_SLIDES[activeDotIndex].src}
             alt="Completed IWI model, enlarged"
             onClick={(event) => event.stopPropagation()}
           />
@@ -185,7 +195,7 @@ We'll make the model.</h2>
             aria-label="Next photo"
             onClick={(event) => {
               event.stopPropagation()
-              goToSlide(activeIndex + 1)
+              setActiveIndex((current) => current + 1)
             }}
           >
             ›
