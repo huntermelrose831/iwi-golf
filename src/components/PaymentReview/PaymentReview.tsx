@@ -6,7 +6,7 @@ import type { OrderDetails } from '../../lib/api'
 import { createPaymentIntent } from '../../lib/api'
 import { stripePromise } from '../../lib/stripe'
 import {
-  PRODUCT_PRICE_CENTS,
+  getCoursePriceCents,
   getShippingOption,
   getTotalCents,
   formatUSD,
@@ -23,7 +23,8 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
   const [error, setError] = useState<string | null>(null)
 
   const shippingOption = getShippingOption(order.shippingMethod)
-  const total = getTotalCents(order.shippingMethod)
+  const coursePriceCents = getCoursePriceCents(order.course)
+  const total = getTotalCents(order.course, order.shippingMethod)
 
   useEffect(() => {
     let isActive = true
@@ -85,7 +86,7 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
       <dl className="payment-review__price-breakdown">
         <div className="payment-review__row">
           <dt className="payment-review__term">3D Hole-in-One Model</dt>
-          <dd className="payment-review__value">{formatUSD(PRODUCT_PRICE_CENTS)}</dd>
+          <dd className="payment-review__value">{formatUSD(coursePriceCents)}</dd>
         </div>
         <div className="payment-review__row">
           <dt className="payment-review__term">{shippingOption.label}</dt>

@@ -12,12 +12,40 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 const PORT = process.env.PORT || 4242
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173'
 const CURRENCY = process.env.STRIPE_CURRENCY || 'usd'
-const PRODUCT_PRICE_CENTS = Number(process.env.STRIPE_UNIT_AMOUNT || 5000)
+const DEFAULT_PRODUCT_PRICE_CENTS = 5000
 const SHIPPING_RATES = { pickup: 0, standard: 1500 }
 
-function getTotalCents(shippingMethod) {
+// Mirrors src/lib/courses.ts — keep in sync when courses change.
+const COURSE_PRICES = {
+  'Boulder Creek Golf Course':       3500,
+  'Deep Cliff Golf Course':          3500,
+  'DeLaveaga Golf Course':           5000,
+  'Door Creek Golf Course':          5000,
+  'FireFly Golf Links':              5000,
+  'Glen Hills Country Club':         5000,
+  'Los Lagos Golf Course':           5000,
+  'Los Verdes Golf Course':          5000,
+  'Moffett Field Golf Club':         5000,
+  'Odana Hills Golf Course':         5000,
+  'Pajaro Valley Golf Club':         5000,
+  'Pasatiempo Golf Club':            9500,
+  'Pebble Beach Golf Links':        18000,
+  'Pruneridge Golf Club':            3500,
+  'Recreation Park Golf Course':     5000,
+  'Seabright Country Club':          5000,
+  'Seascape Golf Club':              5000,
+  'Spyglass Hill Golf Course':      12500,
+  'Stanford University Golf Course': 5000,
+  'Sunken Gardens Golf Course':      3500,
+}
+
+function getCoursePriceCents(courseName) {
+  return COURSE_PRICES[courseName] ?? DEFAULT_PRODUCT_PRICE_CENTS
+}
+
+function getTotalCents(courseName, shippingMethod) {
   const shipping = SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
-  return PRODUCT_PRICE_CENTS + shipping
+  return getCoursePriceCents(courseName) + shipping
 }
 
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
@@ -293,8 +321,11 @@ function pickOrderFields(body) {
 }
 
 async function sendOrderNotificationEmail(order) {
-  const shippingCost = order.shippingMethod === 'pickup' ? 0 : 15
-  const totalCost = 50 + shippingCost
+  const productCents = getCoursePriceCents(order.course)
+  const shippingCents = SHIPPING_RATES[order.shippingMethod] ?? SHIPPING_RATES.standard
+  const totalCents = productCents + shippingCents
+
+  const fmt = (cents) => `$${(cents / 100).toFixed(2)}`
 
   const lines = [
     `Course: ${order.course || '—'}`,
@@ -311,9 +342,9 @@ async function sendOrderNotificationEmail(order) {
     `Shipping: ${order.shippingMethod === 'pickup' ? 'Local Pickup' : 'Standard Shipping'}`,
     `Ship to: ${order.street || '—'}, ${order.city || '—'}, ${order.state || '—'} ${order.zip || '—'}`,
     '',
-    `Product: $50.00`,
-    `Shipping: $${shippingCost.toFixed(2)}`,
-    `Total: $${totalCost.toFixed(2)}`,
+    `Product: ${fmt(productCents)}`,
+    `Shipping: ${fmt(shippingCents)}`,
+    `Total: ${fmt(totalCents)}`,
   ]
 
   await sendGraphEmail({
@@ -326,8 +357,11 @@ async function sendOrderNotificationEmail(order) {
 async function sendCustomerReceiptEmail(order) {
   if (!order.email) return
 
-  const shippingCost = order.shippingMethod === 'pickup' ? 0 : 15
-  const totalCost = 50 + shippingCost
+  const productCents = getCoursePriceCents(order.course)
+  const shippingCents = SHIPPING_RATES[order.shippingMethod] ?? SHIPPING_RATES.standard
+  const totalCents = productCents + shippingCents
+
+  const fmt = (cents) => `$${(cents / 100).toFixed(2)}`
 
   const html = `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
@@ -347,15 +381,15 @@ async function sendCustomerReceiptEmail(order) {
       <table style="width: 100%; text-align: left; border-collapse: collapse;">
         <tr>
           <td style="padding: 8px 0; border-bottom: 1px solid #eee;">3D Hole-in-One Model</td>
-          <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">$50.00</td>
+          <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${fmt(productCents)}</td>
         </tr>
         <tr>
           <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${order.shippingMethod === 'pickup' ? 'Local Pickup' : 'Standard Shipping'}</td>
-          <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">$${shippingCost.toFixed(2)}</td>
+          <td style="padding: 8px 0; border-bottom: 1px solid #eee; text-align: right;">${shippingCents === 0 ? 'Free' : fmt(shippingCents)}</td>
         </tr>
         <tr>
           <td style="padding: 12px 0; font-weight: bold; font-size: 1.1em;">Total</td>
-          <td style="padding: 12px 0; font-weight: bold; font-size: 1.1em; text-align: right;">$${totalCost.toFixed(2)}</td>
+          <td style="padding: 12px 0; font-weight: bold; font-size: 1.1em; text-align: right;">${fmt(totalCents)}</td>
         </tr>
       </table>
 
@@ -394,7 +428,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: getTotalCents(order.shippingMethod),
+      amount: getTotalCents(order.course, order.shippingMethod),
       currency: CURRENCY,
       // Which methods appear here (card, Apple/Google Pay, etc.) is controlled by your Stripe Dashboard settings.
       automatic_payment_methods: { enabled: true },

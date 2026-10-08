@@ -1,11 +1,18 @@
 // ---------------------------------------------------------------------------
 // Pricing & shipping config
-// Edit PRODUCT_PRICE_CENTS and SHIPPING_OPTIONS here to update rates.
-// Add course names to LOCAL_PICKUP_COURSES to enable free local pickup for them.
+// Per-course prices live in courses.ts (COURSES array).
+// Shipping options and pickup eligibility are also derived from courses.ts.
 // ---------------------------------------------------------------------------
 
-/** Base product price in cents (e.g. 5000 = $50.00) */
-export const PRODUCT_PRICE_CENTS = 5000
+import { getCourse, LOCAL_PICKUP_COURSE_NAMES } from './courses'
+
+/** Default product price in cents, used when a course is not in the list. */
+export const DEFAULT_PRODUCT_PRICE_CENTS = 5000
+
+/** Returns the product price in cents for the given course name. */
+export function getCoursePriceCents(courseName: string): number {
+  return getCourse(courseName)?.priceCents ?? DEFAULT_PRODUCT_PRICE_CENTS
+}
 
 export type ShippingMethod = 'pickup' | 'standard'
 
@@ -34,22 +41,18 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
 
 /**
  * Courses that offer local pickup.
- * Must exactly match names in COURSE_OPTIONS (courses.ts).
+ * Derived from courses.ts — do not edit here.
  */
-export const LOCAL_PICKUP_COURSES = new Set([
-  'DeLaveaga Golf Course',
-  'Seabright Country Club',
-  'Seascape Golf Club',
-])
+export const LOCAL_PICKUP_COURSES = LOCAL_PICKUP_COURSE_NAMES
 
 /** Returns the shipping option object for a given id, falling back to standard. */
 export function getShippingOption(id: ShippingMethod): ShippingOption {
   return SHIPPING_OPTIONS.find((o) => o.id === id) ?? SHIPPING_OPTIONS[1]
 }
 
-/** Total charge in cents for a given shipping method. */
-export function getTotalCents(shippingMethod: ShippingMethod): number {
-  return PRODUCT_PRICE_CENTS + getShippingOption(shippingMethod).priceCents
+/** Total charge in cents for a given course + shipping method. */
+export function getTotalCents(courseName: string, shippingMethod: ShippingMethod): number {
+  return getCoursePriceCents(courseName) + getShippingOption(shippingMethod).priceCents
 }
 
 /** Format cents as a USD string, e.g. 24900 → "$249.00" */
