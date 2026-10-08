@@ -24,7 +24,7 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
 
   const shippingOption = getShippingOption(order.shippingMethod, order.course)
   const coursePriceCents = getCoursePriceCents(order.course)
-  const total = getTotalCents(order.course, order.shippingMethod)
+  const total = getTotalCents(order.course, order.shippingMethod, order.promoCode)
 
   useEffect(() => {
     let isActive = true
@@ -94,6 +94,12 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
             {shippingOption.priceCents === 0 ? 'Free' : formatUSD(shippingOption.priceCents)}
           </dd>
         </div>
+        {order.promoCode === 'TEST' && (
+          <div className="payment-review__row" style={{ color: '#2ecc71' }}>
+            <dt className="payment-review__term">Promo Code (TEST)</dt>
+            <dd className="payment-review__value">-{formatUSD(coursePriceCents + shippingOption.priceCents - 500)}</dd>
+          </div>
+        )}
         <div className="payment-review__row payment-review__row--total">
           <dt className="payment-review__term payment-review__term--total">Total</dt>
           <dd className="payment-review__value payment-review__value--total">{formatUSD(total)}</dd>

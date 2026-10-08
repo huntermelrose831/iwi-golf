@@ -188,6 +188,18 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
         </>
       )}
 
+      <p className="customer-info-form__section-label" style={{ marginTop: '2rem' }}>Discount (Optional)</p>
+      <label className="customer-info-form__field">
+        <span className="customer-info-form__label">Promo Code</span>
+        <input
+          className="customer-info-form__input"
+          placeholder="Enter code"
+          value={order.promoCode}
+          onChange={handleInput('promoCode')}
+          maxLength={50}
+        />
+      </label>
+
       <div className="customer-info-form__actions">
         <button type="button" className="customer-info-form__back" onClick={onBack}>
           Back

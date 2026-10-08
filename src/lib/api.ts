@@ -19,6 +19,7 @@ export type OrderDetails = {
   state: string
   zip: string
   shippingMethod: ShippingMethod
+  promoCode: string
 }
 
 export async function createPaymentIntent(order: OrderDetails): Promise<string> {

@@ -50,7 +50,10 @@ function getShippingCents(courseName, shippingMethod) {
   return SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
 }
 
-function getTotalCents(courseName, shippingMethod) {
+function getTotalCents(courseName, shippingMethod, promoCode) {
+  if (promoCode === 'TEST') {
+    return 500
+  }
   return getCoursePriceCents(courseName) + getShippingCents(courseName, shippingMethod)
 }
 
@@ -315,6 +318,7 @@ function pickOrderFields(body) {
     'state',
     'zip',
     'shippingMethod',
+    'promoCode',
   ]
 
   const order = {}
@@ -329,7 +333,7 @@ function pickOrderFields(body) {
 async function sendOrderNotificationEmail(order) {
   const productCents = getCoursePriceCents(order.course)
   const shippingCents = getShippingCents(order.course, order.shippingMethod)
-  const totalCents = productCents + shippingCents
+  const totalCents = getTotalCents(order.course, order.shippingMethod, order.promoCode)
 
   const fmt = (cents) => `$${(cents / 100).toFixed(2)}`
 
@@ -365,7 +369,7 @@ async function sendCustomerReceiptEmail(order) {
 
   const productCents = getCoursePriceCents(order.course)
   const shippingCents = getShippingCents(order.course, order.shippingMethod)
-  const totalCents = productCents + shippingCents
+  const totalCents = getTotalCents(order.course, order.shippingMethod, order.promoCode)
 
   const fmt = (cents) => `$${(cents / 100).toFixed(2)}`
 
@@ -434,7 +438,7 @@ app.post('/api/create-payment-intent', async (req, res) => {
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: getTotalCents(order.course, order.shippingMethod),
+      amount: getTotalCents(order.course, order.shippingMethod, order.promoCode),
       currency: CURRENCY,
       // Which methods appear here (card, Apple/Google Pay, etc.) is controlled by your Stripe Dashboard settings.
       automatic_payment_methods: { enabled: true },

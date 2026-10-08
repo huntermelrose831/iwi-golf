@@ -68,7 +68,10 @@ export function getShippingOption(id: ShippingMethod, courseName: string): Shipp
 }
 
 /** Total charge in cents for a given course + shipping method. */
-export function getTotalCents(courseName: string, shippingMethod: ShippingMethod): number {
+export function getTotalCents(courseName: string, shippingMethod: ShippingMethod, promoCode?: string): number {
+  if (promoCode === 'TEST') {
+    return 500
+  }
   return getCoursePriceCents(courseName) + getShippingOption(shippingMethod, courseName).priceCents
 }
 
