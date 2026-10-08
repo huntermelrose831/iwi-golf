@@ -1,0 +1,44 @@
+.making {
+  padding: 6rem 1.5rem;
+  background-color: var(--color-surface);
+}
+
+.making__inner {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.making__heading {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: var(--color-text-light);
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+.making__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.making__content p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .making {
+    padding: 4rem 1.5rem;
+  }
+  
+  .making__heading {
+    font-size: 2rem;
+  }
+  
+  .making__content {
+    font-size: 1rem;
+  }
+}

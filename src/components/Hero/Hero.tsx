@@ -1,5 +1,5 @@
 import Button from '../Button/Button'
-import heroImg from '../../assets/Image1.jpg'
+import celebration from '../../assets/celebration.png'
 import './Hero.css'
 
 function Hero() {
@@ -17,9 +17,9 @@ function Hero() {
             <span className="hero__heading-accent">It Went In!™</span>
           </h1>
           <p className="hero__subtext">
-            A hole-in-one happens once, if it happens at all. IWI — It Went In — turns
-            yours into a 3D printed model: the green and its slopes, the fringe around
-            it, the bunkers and water that didn't catch your ball.
+            Your Hole-in-One. Golf’s most exciting moment!
+Celebrate yours with a 3D printed model – The green with its contours, the surrounding
+fringe with it’s bunkers, water, boulders, and the other dangers you avoided
           </p>
           <div className="hero__actions">
             <Button to="/order" variant="primary">
@@ -31,7 +31,7 @@ function Hero() {
           </div>
         </div>
         <div className="hero__visual">
-          <img className="hero__image" src={heroImg} alt="3D printed model of a hole-in-one" />
+          <img className="hero__image" src={celebration} alt="3D printed model of a hole-in-one" />
         </div>
       </div>
     </section>

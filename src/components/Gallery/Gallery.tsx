@@ -81,7 +81,8 @@ function Gallery() {
   return (
     <section className="gallery">
       <div className="gallery__inner">
-        <h2 className="gallery__heading">Aces we've built</h2>
+        <h2 className="gallery__heading">You made the shot.
+We'll make the model.</h2>
 
         <div
           className="gallery__carousel"
