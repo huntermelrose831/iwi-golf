@@ -25,9 +25,6 @@ fringe with it’s bunkers, water, boulders, and the other dangers you avoided
             <Button to="/order" variant="primary">
               Order Yours
             </Button>
-            <Button href="#how-its-made" variant="secondary">
-              See how it's made
-            </Button>
           </div>
         </div>
         <div className="hero__visual">
