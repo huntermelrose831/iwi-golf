@@ -1,5 +1,5 @@
 import Button from '../Button/Button'
-import celebration from '../../assets/celebration.png'
+import celebration from '../../assets/Celebration.png'
 import './Hero.css'
 
 function Hero() {
