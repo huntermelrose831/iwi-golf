@@ -43,9 +43,15 @@ function getCoursePriceCents(courseName) {
   return COURSE_PRICES[courseName] ?? DEFAULT_PRODUCT_PRICE_CENTS
 }
 
+function getShippingCents(courseName, shippingMethod) {
+  if (courseName === 'Pebble Beach Golf Links' && shippingMethod === 'standard') {
+    return 0
+  }
+  return SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
+}
+
 function getTotalCents(courseName, shippingMethod) {
-  const shipping = SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
-  return getCoursePriceCents(courseName) + shipping
+  return getCoursePriceCents(courseName) + getShippingCents(courseName, shippingMethod)
 }
 
 const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
@@ -322,7 +328,7 @@ function pickOrderFields(body) {
 
 async function sendOrderNotificationEmail(order) {
   const productCents = getCoursePriceCents(order.course)
-  const shippingCents = SHIPPING_RATES[order.shippingMethod] ?? SHIPPING_RATES.standard
+  const shippingCents = getShippingCents(order.course, order.shippingMethod)
   const totalCents = productCents + shippingCents
 
   const fmt = (cents) => `$${(cents / 100).toFixed(2)}`
@@ -358,7 +364,7 @@ async function sendCustomerReceiptEmail(order) {
   if (!order.email) return
 
   const productCents = getCoursePriceCents(order.course)
-  const shippingCents = SHIPPING_RATES[order.shippingMethod] ?? SHIPPING_RATES.standard
+  const shippingCents = getShippingCents(order.course, order.shippingMethod)
   const totalCents = productCents + shippingCents
 
   const fmt = (cents) => `$${(cents / 100).toFixed(2)}`

@@ -45,14 +45,31 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
  */
 export const LOCAL_PICKUP_COURSES = LOCAL_PICKUP_COURSE_NAMES
 
-/** Returns the shipping option object for a given id, falling back to standard. */
-export function getShippingOption(id: ShippingMethod): ShippingOption {
-  return SHIPPING_OPTIONS.find((o) => o.id === id) ?? SHIPPING_OPTIONS[1]
+/** Returns the shipping options available for a given course. */
+export function getAvailableShippingOptions(courseName: string): ShippingOption[] {
+  const isPebble = courseName === 'Pebble Beach Golf Links'
+  
+  return SHIPPING_OPTIONS.map((opt) => {
+    if (opt.id === 'standard' && isPebble) {
+      return { 
+        ...opt, 
+        priceCents: 0, 
+        description: 'Complimentary shipping included.' 
+      }
+    }
+    return opt
+  })
+}
+
+/** Returns the shipping option object for a given id and course, falling back to standard. */
+export function getShippingOption(id: ShippingMethod, courseName: string): ShippingOption {
+  const options = getAvailableShippingOptions(courseName)
+  return options.find((o) => o.id === id) ?? options[1]
 }
 
 /** Total charge in cents for a given course + shipping method. */
 export function getTotalCents(courseName: string, shippingMethod: ShippingMethod): number {
-  return getCoursePriceCents(courseName) + getShippingOption(shippingMethod).priceCents
+  return getCoursePriceCents(courseName) + getShippingOption(shippingMethod, courseName).priceCents
 }
 
 /** Format cents as a USD string, e.g. 24900 → "$249.00" */

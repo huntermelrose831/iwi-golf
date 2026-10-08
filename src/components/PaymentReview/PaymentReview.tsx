@@ -22,7 +22,7 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const shippingOption = getShippingOption(order.shippingMethod)
+  const shippingOption = getShippingOption(order.shippingMethod, order.course)
   const coursePriceCents = getCoursePriceCents(order.course)
   const total = getTotalCents(order.course, order.shippingMethod)
 

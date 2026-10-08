@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react'
 import type { OrderDetails } from '../../lib/api'
 import {
-  SHIPPING_OPTIONS,
+  getAvailableShippingOptions,
   LOCAL_PICKUP_COURSES,
   formatUSD,
   type ShippingMethod,
@@ -30,7 +30,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
   }
 
   const courseOffersPickup = LOCAL_PICKUP_COURSES.has(order.course)
-  const availableShipping = SHIPPING_OPTIONS.filter(
+  const availableShipping = getAvailableShippingOptions(order.course).filter(
     (opt) => opt.id !== 'pickup' || courseOffersPickup,
   )
 
