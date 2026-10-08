@@ -5,10 +5,10 @@ function About() {
   return (
     <section className="about">
       <div className="about__inner">
-        <h2 className="about__heading">About IWI Enterprises</h2>
+        <h2 className="about__heading">About IWI™ Enterprises</h2>
 
         <p className="about__paragraph">
-          At IWI Enterprises, we believe the greatest moments in golf deserve a celebration
+          At IWI™ Enterprises, we believe the greatest moments in golf deserve a celebration
           to match. And nothing is greater than your hole-in-one.
         </p>
 

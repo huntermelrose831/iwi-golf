@@ -8,7 +8,7 @@ function Header() {
       <div className="header__inner">
         <Link to="/" className="header__brand">
           <img className="header__logo" src={iwiLogo} alt="IWI.golf" />
-          <span className="header__wordmark">IWI.golf</span>
+          <span className="header__wordmark">IWI™.golf</span>
         </Link>
         <Link to="/order" className="header__cta">
           Order Yours
