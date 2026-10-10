@@ -17,26 +17,9 @@ const SHIPPING_RATES = { pickup: 0, standard: 1500 }
 
 // Mirrors src/lib/courses.ts — keep in sync when courses change.
 const COURSE_PRICES = {
-  'Boulder Creek Golf Course':       3500,
-  'Deep Cliff Golf Course':          3500,
   'DeLaveaga Golf Course':           5000,
-  'Door Creek Golf Course':          5000,
-  'FireFly Golf Links':              5000,
-  'Glen Hills Country Club':         5000,
-  'Los Lagos Golf Course':           5000,
-  'Los Verdes Golf Course':          5000,
-  'Moffett Field Golf Club':         5000,
-  'Odana Hills Golf Course':         5000,
-  'Pajaro Valley Golf Club':         5000,
-  'Pasatiempo Golf Club':            9500,
-  'Pebble Beach Golf Links':        18000,
-  'Pruneridge Golf Club':            3500,
-  'Recreation Park Golf Course':     5000,
-  'Seabright Country Club':          5000,
-  'Seascape Golf Club':              5000,
-  'Spyglass Hill Golf Course':      12500,
   'Stanford University Golf Course': 5000,
-  'Sunken Gardens Golf Course':      3500,
+  'Other':                           5000,
 }
 
 function getCoursePriceCents(courseName) {
@@ -44,9 +27,6 @@ function getCoursePriceCents(courseName) {
 }
 
 function getShippingCents(courseName, shippingMethod) {
-  if (courseName === 'Pebble Beach Golf Links' && shippingMethod === 'standard') {
-    return 0
-  }
   return SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
 }
 

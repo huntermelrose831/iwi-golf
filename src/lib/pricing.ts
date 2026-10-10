@@ -45,19 +45,14 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
  */
 export const LOCAL_PICKUP_COURSES = LOCAL_PICKUP_COURSE_NAMES
 
-/** Returns the shipping options available for a given course. */
 export function getAvailableShippingOptions(courseName: string): ShippingOption[] {
-  const isPebble = courseName === 'Pebble Beach Golf Links'
+  const isStanford = courseName === 'Stanford University Golf Course'
   
-  return SHIPPING_OPTIONS.map((opt) => {
-    if (opt.id === 'standard' && isPebble) {
-      return { 
-        ...opt, 
-        priceCents: 0, 
-        description: 'Complimentary shipping included.' 
-      }
+  return SHIPPING_OPTIONS.filter((opt) => {
+    if (opt.id === 'standard' && !isStanford) {
+      return false
     }
-    return opt
+    return true
   })
 }
 
