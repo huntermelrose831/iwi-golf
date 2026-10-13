@@ -113,140 +113,135 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
         </select>
       </label>
 
-      {isCustomCourse && (
-        <label className="hole-details-form__field">
-          <span className="hole-details-form__label">
-            <span className="hole-details-form__required">*</span> Course Name
-          </span>
-          <input
-            className="hole-details-form__input"
-            placeholder="Enter your course name"
-            value={order.course}
-            onChange={handleInput('course')}
-            maxLength={200}
-            required
-          />
-        </label>
-      )}
+      {isCustomCourse ? (
+        <div className="hole-details-form__custom-notice" style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '8px', border: '1px solid #e5e7eb' }}>
+          <h3 style={{ marginTop: 0, marginBottom: '0.75rem', fontSize: '1.1rem', color: '#111827' }}>Course Not Listed?</h3>
+          <p style={{ margin: 0, color: '#4b5563', lineHeight: 1.5 }}>
+            Since this course isn't in our system yet, please <a href="#contact" style={{ color: '#059669', textDecoration: 'underline' }}>send us a message</a> with the course name and hole number. We'll check if we can craft it and get back to you with a lead time!
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="hole-details-form__row">
+            <label className="hole-details-form__field">
+              <span className="hole-details-form__label">
+                <span className="hole-details-form__required">*</span> Hole Number
+              </span>
+              <input
+                className="hole-details-form__input"
+                placeholder="e.g. 7"
+                value={order.hole}
+                onChange={handleInput('hole')}
+                maxLength={200}
+                required
+              />
+            </label>
 
-      <div className="hole-details-form__row">
-        <label className="hole-details-form__field">
-          <span className="hole-details-form__label">
-            <span className="hole-details-form__required">*</span> Hole Number
-          </span>
-          <input
-            className="hole-details-form__input"
-            placeholder="e.g. 7"
-            value={order.hole}
-            onChange={handleInput('hole')}
-            maxLength={200}
-            required
-          />
-        </label>
+            <label className="hole-details-form__field">
+              <span className="hole-details-form__label">
+                <span className="hole-details-form__required">*</span> Golfer's Name
+              </span>
+              <input
+                className="hole-details-form__input"
+                placeholder="e.g. Jane Golfer"
+                value={order.golferName}
+                onChange={handleInput('golferName')}
+                maxLength={200}
+                required
+              />
+            </label>
 
-        <label className="hole-details-form__field">
-          <span className="hole-details-form__label">
-            <span className="hole-details-form__required">*</span> Golfer's Name
-          </span>
-          <input
-            className="hole-details-form__input"
-            placeholder="e.g. Jane Golfer"
-            value={order.golferName}
-            onChange={handleInput('golferName')}
-            maxLength={200}
-            required
-          />
-        </label>
+            <label className="hole-details-form__field hole-details-form__field--date">
+              <span className="hole-details-form__label">Hole-in-One Date</span>
+              <button
+                type="button"
+                className="hole-details-form__date-button"
+                onClick={openDatePicker}
+                aria-label="Choose hole-in-one date"
+              >
+                <svg
+                  className="hole-details-form__date-icon"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
+                  <path d="M3 8h14" stroke="currentColor" strokeWidth="1.4" />
+                  <path d="M6.5 2.5v3M13.5 2.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+                {order.date && <span>{formatDisplayDate(order.date)}</span>}
+              </button>
+              <input
+                ref={dateInputRef}
+                type="date"
+                className="hole-details-form__date-input-hidden"
+                value={order.date}
+                onChange={handleInput('date')}
+                tabIndex={-1}
+                aria-hidden="true"
+              />
+              <span className="hole-details-form__hint hole-details-form__hint--date">
+                Had your ace years ago? Click the box above to select the date, any year works.
+              </span>
+            </label>
+          </div>
 
-        <label className="hole-details-form__field hole-details-form__field--date">
-          <span className="hole-details-form__label">Hole-in-One Date</span>
+          <div className="hole-details-form__row">
+            <label className="hole-details-form__field">
+              <span className="hole-details-form__label">Yards</span>
+              <input
+                className="hole-details-form__input"
+                placeholder="e.g. 178"
+                value={order.yardage}
+                onChange={handleInput('yardage')}
+                maxLength={200}
+              />
+            </label>
+
+            <label className="hole-details-form__field">
+              <span className="hole-details-form__label">Club Used</span>
+              <select
+                className="hole-details-form__input"
+                value={isCustomClub ? 'Other' : order.club}
+                onChange={handleClubSelect}
+              >
+                <option value="" disabled>
+                  Select a club…
+                </option>
+                {CLUB_OPTIONS.map((club) => (
+                  <option key={club} value={club}>
+                    {club}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {isCustomClub && (
+            <label className="hole-details-form__field">
+              <span className="hole-details-form__label">Club Name</span>
+              <input
+                className="hole-details-form__input"
+                placeholder="Enter your club"
+                value={order.club}
+                onChange={handleInput('club')}
+                maxLength={200}
+              />
+            </label>
+          )}
+
+          <FlagPlacement value={{ x: order.flagX, y: order.flagY }} onChange={onFlagChange} />
+
           <button
             type="button"
-            className="hole-details-form__date-button"
-            onClick={openDatePicker}
-            aria-label="Choose hole-in-one date"
+            className="hole-details-form__next"
+            onClick={onNext}
+            disabled={!order.course || !order.hole || !order.golferName}
           >
-            <svg
-              className="hole-details-form__date-icon"
-              viewBox="0 0 20 20"
-              fill="none"
-              aria-hidden="true"
-            >
-              <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
-              <path d="M3 8h14" stroke="currentColor" strokeWidth="1.4" />
-              <path d="M6.5 2.5v3M13.5 2.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            </svg>
-            {order.date && <span>{formatDisplayDate(order.date)}</span>}
+            Next: Order Information
           </button>
-          <input
-            ref={dateInputRef}
-            type="date"
-            className="hole-details-form__date-input-hidden"
-            value={order.date}
-            onChange={handleInput('date')}
-            tabIndex={-1}
-            aria-hidden="true"
-          />
-          <span className="hole-details-form__hint hole-details-form__hint--date">
-            Had your ace years ago? Click the box above to select the date, any year works.
-          </span>
-        </label>
-      </div>
-
-      <div className="hole-details-form__row">
-        <label className="hole-details-form__field">
-          <span className="hole-details-form__label">Yards</span>
-          <input
-            className="hole-details-form__input"
-            placeholder="e.g. 178"
-            value={order.yardage}
-            onChange={handleInput('yardage')}
-            maxLength={200}
-          />
-        </label>
-
-        <label className="hole-details-form__field">
-          <span className="hole-details-form__label">Club Used</span>
-          <select
-            className="hole-details-form__input"
-            value={isCustomClub ? 'Other' : order.club}
-            onChange={handleClubSelect}
-          >
-            <option value="" disabled>
-              Select a club…
-            </option>
-            {CLUB_OPTIONS.map((club) => (
-              <option key={club} value={club}>
-                {club}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      {isCustomClub && (
-        <label className="hole-details-form__field">
-          <span className="hole-details-form__label">Club Name</span>
-          <input
-            className="hole-details-form__input"
-            placeholder="Enter your club"
-            value={order.club}
-            onChange={handleInput('club')}
-            maxLength={200}
-          />
-        </label>
+        </>
       )}
-
-      <FlagPlacement value={{ x: order.flagX, y: order.flagY }} onChange={onFlagChange} />
-
-      <button
-        type="button"
-        className="hole-details-form__next"
-        onClick={onNext}
-        disabled={!order.course || !order.hole || !order.golferName}
-      >
-        Next: Order Information
-      </button>
     </div>
   )
 }
