@@ -150,4 +150,14 @@
   .hole-details-form__row {
     grid-template-columns: 1fr;
   }
+
+  /* Take the hint out of absolute flow on mobile so it doesn't overlap the next row */
+  .hole-details-form__field--date {
+    position: static;
+  }
+
+  .hole-details-form__hint--date {
+    position: static;
+    margin-top: 0.4rem;
+  }
 }

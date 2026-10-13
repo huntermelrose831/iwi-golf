@@ -184,4 +184,17 @@
   }
 }
 
+@media (max-width: 480px) {
+  .gallery__carousel {
+    padding: 1.5rem 0;
+  }
 
+  .gallery__slide-image {
+    height: 150px;
+  }
+
+  /* Reduce the active slide scale so it doesn't overflow on narrow screens */
+  .gallery__slide--active {
+    transform: scale(1.05);
+  }
+}
