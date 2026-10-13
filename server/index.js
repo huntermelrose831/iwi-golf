@@ -15,19 +15,27 @@ const CURRENCY = process.env.STRIPE_CURRENCY || 'usd'
 const DEFAULT_PRODUCT_PRICE_CENTS = 5000
 const SHIPPING_RATES = { pickup: 0, standard: 1500 }
 
-// Mirrors src/lib/courses.ts — keep in sync when courses change.
+// Mirrors src/lib/courses.ts COURSE_OPTIONS — keep in sync when courses change.
+// Keys are the full display labels used in order.course.
 const COURSE_PRICES = {
-  'DeLaveaga Golf Course':           5000,
-  'Stanford University Golf Course': 5000,
-  'Other':                           5000,
+  'DeLaveaga Golf Course (Hole 5)':                5000,
+  'Stanford University Golf Course (Holes 4 & 8)': 5000,
+  'Other':                                         5000,
 }
 
 function getCoursePriceCents(courseName) {
   return COURSE_PRICES[courseName] ?? DEFAULT_PRODUCT_PRICE_CENTS
 }
 
-function getShippingCents(courseName, shippingMethod) {
-  return SHIPPING_RATES[shippingMethod] ?? SHIPPING_RATES.standard
+function getShippingCents(courseLabel, shippingMethod) {
+  const isStanford = courseLabel.startsWith('Stanford University Golf Course')
+  if (isStanford && shippingMethod === 'standard') {
+    return SHIPPING_RATES.standard
+  }
+  if (!isStanford && shippingMethod === 'standard') {
+    return 0 // standard shipping not offered for non-Stanford; pickup only
+  }
+  return SHIPPING_RATES[shippingMethod] ?? 0
 }
 
 function getTotalCents(courseName, shippingMethod, promoCode) {

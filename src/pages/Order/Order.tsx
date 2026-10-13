@@ -39,7 +39,7 @@ function Order() {
 
     return {
       ...INITIAL_ORDER,
-      course: courseParam && COURSE_OPTIONS.includes(courseParam) ? courseParam : INITIAL_ORDER.course,
+      course: courseParam && COURSE_OPTIONS.some((o) => o.label === courseParam) ? courseParam : INITIAL_ORDER.course,
       hole: holeParam ?? INITIAL_ORDER.hole,
     }
   })

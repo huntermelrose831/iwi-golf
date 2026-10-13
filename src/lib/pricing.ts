@@ -4,14 +4,14 @@
 // Shipping options and pickup eligibility are also derived from courses.ts.
 // ---------------------------------------------------------------------------
 
-import { getCourse, LOCAL_PICKUP_COURSE_NAMES } from './courses'
+import { getCourseByLabel, LOCAL_PICKUP_COURSE_NAMES } from './courses'
 
 /** Default product price in cents, used when a course is not in the list. */
 export const DEFAULT_PRODUCT_PRICE_CENTS = 5000
 
-/** Returns the product price in cents for the given course name. */
-export function getCoursePriceCents(courseName: string): number {
-  return getCourse(courseName)?.priceCents ?? DEFAULT_PRODUCT_PRICE_CENTS
+/** Returns the product price in cents for the given course label. */
+export function getCoursePriceCents(courseLabel: string): number {
+  return getCourseByLabel(courseLabel)?.priceCents ?? DEFAULT_PRODUCT_PRICE_CENTS
 }
 
 export type ShippingMethod = 'pickup' | 'standard'
@@ -40,14 +40,14 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
 ]
 
 /**
- * Courses that offer local pickup.
+ * Course labels that offer local pickup.
  * Derived from courses.ts — do not edit here.
  */
 export const LOCAL_PICKUP_COURSES = LOCAL_PICKUP_COURSE_NAMES
 
-export function getAvailableShippingOptions(courseName: string): ShippingOption[] {
-  const isStanford = courseName === 'Stanford University Golf Course'
-  
+export function getAvailableShippingOptions(courseLabel: string): ShippingOption[] {
+  const isStanford = courseLabel.startsWith('Stanford University Golf Course')
+
   return SHIPPING_OPTIONS.filter((opt) => {
     if (opt.id === 'standard' && !isStanford) {
       return false

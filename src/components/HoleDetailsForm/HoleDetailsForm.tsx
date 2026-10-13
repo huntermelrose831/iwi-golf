@@ -41,9 +41,11 @@ function formatDisplayDate(isoDate: string) {
   return `${month}/${day}/${year}`
 }
 
+const ALL_LABELS = COURSE_OPTIONS.map((o) => o.label)
+
 function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDetailsFormProps) {
   const [isCustomCourse, setIsCustomCourse] = useState(
-    Boolean(order.course) && !COURSE_OPTIONS.includes(order.course),
+    Boolean(order.course) && !ALL_LABELS.includes(order.course),
   )
   const [isCustomClub, setIsCustomClub] = useState(
     Boolean(order.club) && !CLUB_OPTIONS.includes(order.club),
@@ -67,13 +69,21 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
   }
 
   const handleCourseSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-    const value = event.currentTarget.value
-    if (value === 'Other') {
+    const label = event.currentTarget.value
+    if (label === 'Other') {
       setIsCustomCourse(true)
       onFieldChange('course', '')
+      onFieldChange('hole', '')
     } else {
       setIsCustomCourse(false)
-      onFieldChange('course', value)
+      onFieldChange('course', label)
+      // Auto-populate hole from preset if available
+      const selected = COURSE_OPTIONS.find((o) => o.label === label)
+      if (selected?.course.hole) {
+        onFieldChange('hole', selected.course.hole)
+      } else {
+        onFieldChange('hole', '')
+      }
     }
   }
 
@@ -87,6 +97,11 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
       onFieldChange('club', value)
     }
   }
+
+  // Determine if the selected listing has a preset (locked) hole number
+  const selectedOption = COURSE_OPTIONS.find((o) => o.label === order.course)
+  const hasPresetHole = Boolean(selectedOption?.course.hole)
+
 
   return (
     <div className="hole-details-form">
@@ -105,9 +120,9 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
           <option value="" disabled>
             Select a course…
           </option>
-          {COURSE_OPTIONS.map((course) => (
-            <option key={course} value={course}>
-              {course}
+          {COURSE_OPTIONS.map((opt) => (
+            <option key={opt.label} value={opt.label}>
+              {opt.label}
             </option>
           ))}
         </select>
@@ -134,6 +149,8 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
                 onChange={handleInput('hole')}
                 maxLength={200}
                 required
+                readOnly={hasPresetHole}
+                style={hasPresetHole ? { opacity: 0.6, cursor: 'not-allowed' } : undefined}
               />
             </label>
 

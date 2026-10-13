@@ -19,7 +19,7 @@ function About() {
         <p className="about__paragraph">
           Click "Order Your Personal Celebration," enter the details of your shot
           (course name, hole number, yardage, club, and date), and your model will be
-          built to order and shipped within five days.
+          built to order and shipped within seven days.
         </p>
 
         <p className="about__paragraph about__paragraph--emphasis">
