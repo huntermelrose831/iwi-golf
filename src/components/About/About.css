@@ -1,7 +1,7 @@
 .about {
   padding: 4rem 1.5rem;
   background-image:
-    linear-gradient(rgba(22, 48, 32, 0.72), rgba(22, 48, 32, 0.72)),
+    linear-gradient(rgba(22, 48, 32, 0.5), rgba(22, 48, 32, 0.5)),
     url('../../assets/hole7pebble.jpg');
   background-position: center;
   background-size: cover;
