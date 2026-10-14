@@ -25,8 +25,8 @@ const SLIDE_COUNT = CAROUSEL_SLIDES.length
 // 11 copies — 77 slides of track — so the edge is practically unreachable.
 const COPY_COUNT = 11
 
-// Start in the middle copy so there's room to go backward too.
-const INITIAL_INDEX = SLIDE_COUNT * Math.floor(COPY_COUNT / 2)
+// Start in the middle copy on slide index 2 (photo 3) so there's room to go backward too.
+const INITIAL_INDEX = SLIDE_COUNT * Math.floor(COPY_COUNT / 2) + 2
 
 const EXTENDED_SLIDES = Array.from({ length: COPY_COUNT }, (_, copy) =>
   CAROUSEL_SLIDES.map((slide, index) => ({
