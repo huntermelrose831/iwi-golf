@@ -184,6 +184,18 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
                   className="hole-details-form__date-input-overlay"
                   value={order.date}
                   onChange={handleInput('date')}
+                  onClick={(e) => {
+                    // On desktop Chromium (Chrome/Edge on Windows), clicking an invisible input focuses it
+                    // but does not open the calendar popup unless showPicker() is explicitly called.
+                    const target = e.currentTarget
+                    if (typeof target.showPicker === 'function') {
+                      try {
+                        target.showPicker()
+                      } catch {
+                        // ignore if already showing or unsupported
+                      }
+                    }
+                  }}
                   aria-label="Choose hole-in-one date"
                 />
               </span>{/* end date-wrapper */}

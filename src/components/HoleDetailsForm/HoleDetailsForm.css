@@ -90,13 +90,14 @@
   cursor: pointer;
   text-align: left;
   white-space: nowrap;
+  pointer-events: none; /* Let clicks pass directly to the overlay input */
 }
 
-.hole-details-form__date-button:hover {
+.hole-details-form__date-wrapper:hover .hole-details-form__date-button {
   border-color: var(--color-accent);
 }
 
-.hole-details-form__date-button:focus-visible {
+.hole-details-form__date-wrapper:focus-within .hole-details-form__date-button {
   outline: 2px solid var(--color-accent);
   outline-offset: 1px;
 }
@@ -111,6 +112,7 @@
 .hole-details-form__date-wrapper {
   position: relative;
   display: block;
+  cursor: pointer;
 }
 
 .hole-details-form__date-input-overlay {
@@ -120,6 +122,7 @@
   height: 100%;
   opacity: 0;
   cursor: pointer;
+  z-index: 2;
   /* Prevent iOS from showing its own ugly date styling underneath */
   -webkit-appearance: none;
   font-size: 16px; /* Prevents iOS auto-zoom on focus */
