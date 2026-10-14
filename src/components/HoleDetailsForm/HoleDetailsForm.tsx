@@ -58,15 +58,6 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
     onFieldChange(field, event.currentTarget.value)
   }
 
-  const openDatePicker = () => {
-    const input = dateInputRef.current
-    if (!input) return
-    if (typeof input.showPicker === 'function') {
-      input.showPicker()
-    } else {
-      input.focus()
-    }
-  }
 
   const handleCourseSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     const label = event.currentTarget.value
@@ -170,35 +161,34 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
 
             <label className="hole-details-form__field hole-details-form__field--date">
               <span className="hole-details-form__label">Hole-in-One Date</span>
-              <button
-                type="button"
-                className="hole-details-form__date-button"
-                onClick={openDatePicker}
-                aria-label="Choose hole-in-one date"
-              >
-                <svg
-                  className="hole-details-form__date-icon"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
-                  <path d="M3 8h14" stroke="currentColor" strokeWidth="1.4" />
-                  <path d="M6.5 2.5v3M13.5 2.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-                </svg>
-                {order.date && <span>{formatDisplayDate(order.date)}</span>}
-              </button>
-              <input
-                ref={dateInputRef}
-                type="date"
-                className="hole-details-form__date-input-hidden"
-                value={order.date}
-                onChange={handleInput('date')}
-                tabIndex={-1}
-                aria-hidden="true"
-              />
+              {/* Wrapper positions the invisible date input directly over the styled button.
+                  iOS Safari requires a direct tap on the <input> to open the native date picker —
+                  showPicker() and focus() don't work on iPhone. */}
+              <span className="hole-details-form__date-wrapper">
+                <span className="hole-details-form__date-button" aria-hidden="true">
+                  <svg
+                    className="hole-details-form__date-icon"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.4" />
+                    <path d="M3 8h14" stroke="currentColor" strokeWidth="1.4" />
+                    <path d="M6.5 2.5v3M13.5 2.5v3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                  </svg>
+                  {order.date && <span>{formatDisplayDate(order.date)}</span>}
+                </span>
+                <input
+                  ref={dateInputRef}
+                  type="date"
+                  className="hole-details-form__date-input-overlay"
+                  value={order.date}
+                  onChange={handleInput('date')}
+                  aria-label="Choose hole-in-one date"
+                />
+              </span>{/* end date-wrapper */}
               <span className="hole-details-form__hint hole-details-form__hint--date">
-                Had your ace years ago? Click the box above to select the date, any year works.
+                Had your ace years ago? Tap the box above to select the date, any year works.
               </span>
             </label>
           </div>

@@ -1,6 +1,11 @@
 .making {
   padding: 6rem 1.5rem;
-  background-color: var(--color-surface);
+  background-image:
+    linear-gradient(rgba(10, 25, 15, 0.75), rgba(10, 25, 15, 0.75)),
+    url('../../assets/cliffsidehole.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .making__inner {
