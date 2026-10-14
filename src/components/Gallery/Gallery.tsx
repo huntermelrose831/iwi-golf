@@ -9,9 +9,6 @@ import carouselImg4 from '../../assets/Image6.jpg'
 import './Gallery.css'
 
 const SLIDE_INTERVAL_MS = 4000
-const ITEM_WIDTH = 240
-const ITEM_GAP = 24
-const ITEM_STEP = ITEM_WIDTH + ITEM_GAP
 
 const CAROUSEL_SLIDES = [
   { id: 'delaveaga', src: delaveagaImg },
@@ -39,11 +36,34 @@ const EXTENDED_SLIDES = Array.from({ length: COPY_COUNT }, (_, copy) =>
   })),
 ).flat()
 
+function getSlideConfig() {
+  if (typeof window === 'undefined') {
+    return { width: 240, gap: 24 }
+  }
+  if (window.innerWidth <= 480) {
+    // Proportional width for small mobile screens so the entire photo shrinks gracefully
+    return { width: 170, gap: 14 }
+  }
+  if (window.innerWidth <= 860) {
+    return { width: 200, gap: 18 }
+  }
+  return { width: 240, gap: 24 }
+}
+
 function Gallery() {
+  const [slideConfig, setSlideConfig] = useState(getSlideConfig)
   // activeIndex is never clamped — it just keeps growing or shrinking.
   const [activeIndex, setActiveIndex] = useState(INITIAL_INDEX)
   const [isPaused, setIsPaused] = useState(false)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSlideConfig(getSlideConfig())
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   // The visual dot / active-slide indicator is derived from the raw index.
   const activeDotIndex = activeIndex % SLIDE_COUNT
@@ -86,7 +106,8 @@ function Gallery() {
     setActiveIndex((current) => current + step)
   }
 
-  const trackOffset = activeIndex * ITEM_STEP + ITEM_WIDTH / 2
+  const itemStep = slideConfig.width + slideConfig.gap
+  const trackOffset = activeIndex * itemStep + slideConfig.width / 2
 
   return (
     <section className="gallery">
@@ -112,7 +133,7 @@ We'll make the model.</h2>
                     ? 'gallery__slide gallery__slide--active'
                     : 'gallery__slide'
                 }
-                style={{ width: `${ITEM_WIDTH}px`, marginRight: `${ITEM_GAP}px` }}
+                style={{ width: `${slideConfig.width}px`, marginRight: `${slideConfig.gap}px` }}
                 onClick={() => handleSlideClick(slide.absoluteIndex)}
                 aria-label={
                   slide.absoluteIndex === activeIndex

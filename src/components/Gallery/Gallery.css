@@ -180,7 +180,7 @@
 
 @media (max-width: 860px) {
   .gallery__slide-image {
-    height: 180px;
+    height: 200px;
   }
 }
 
@@ -190,11 +190,16 @@
   }
 
   .gallery__slide-image {
-    height: 150px;
+    height: 170px;
   }
 
-  /* Reduce the active slide scale so it doesn't overflow on narrow screens */
+  .gallery__slide {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+
   .gallery__slide--active {
     transform: scale(1.05);
+    opacity: 1;
   }
 }
