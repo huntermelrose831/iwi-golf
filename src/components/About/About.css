@@ -25,7 +25,7 @@
 
 .about__paragraph {
   color: var(--color-text-muted);
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   line-height: 1.7;
   margin: 0;
 }
@@ -38,4 +38,10 @@
 .about__actions {
   display: flex;
   justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .about__paragraph {
+    font-size: 1.1rem;
+  }
 }
