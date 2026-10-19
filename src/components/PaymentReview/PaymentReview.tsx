@@ -11,6 +11,7 @@ import {
   getTotalCents,
   formatUSD,
 } from '../../lib/pricing'
+import { trackPurchase } from '../../lib/analytics'
 import './PaymentReview.css'
 
 type PaymentReviewProps = {
@@ -110,7 +111,13 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
 
       {clientSecret && (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
-          <PaymentForm onBack={onBack} />
+          <PaymentForm
+            onBack={onBack}
+            order={order}
+            coursePriceCents={coursePriceCents}
+            shippingCents={shippingOption.priceCents}
+            totalCents={total}
+          />
         </Elements>
       )}
 
@@ -123,9 +130,13 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
 
 type PaymentFormProps = {
   onBack: () => void
+  order: OrderDetails
+  coursePriceCents: number
+  shippingCents: number
+  totalCents: number
 }
 
-function PaymentForm({ onBack }: PaymentFormProps) {
+function PaymentForm({ onBack, order, coursePriceCents, shippingCents, totalCents }: PaymentFormProps) {
   const stripe = useStripe()
   const elements = useElements()
   const navigate = useNavigate()
@@ -154,6 +165,23 @@ function PaymentForm({ onBack }: PaymentFormProps) {
     }
 
     if (paymentIntent?.status === 'succeeded') {
+      // Fire GA4 standard e-commerce purchase event
+      trackPurchase({
+        transactionId: paymentIntent.id,
+        value: totalCents / 100,
+        currency: 'USD',
+        shipping: shippingCents / 100,
+        items: [
+          {
+            item_id: `model-${order.course ? order.course.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'custom'}`,
+            item_name: `3D Model - ${order.course || 'Custom Course'} (Hole ${order.hole || '?'})`,
+            price: coursePriceCents / 100,
+            quantity: 1,
+            item_category: '3D Printed Hole-in-One Model',
+          },
+        ],
+      })
+
       navigate('/order/success')
     } else {
       setIsSubmitting(false)
