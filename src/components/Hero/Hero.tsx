@@ -19,7 +19,7 @@ function Hero() {
           <p className="hero__subtext">
             Your Hole-in-One. Golf’s most exciting moment!
 Celebrate yours with a 3D printed model – The green with its contours, the surrounding
-fringe with it’s bunkers, water, boulders, and the other dangers you avoided
+fringe with it’s bunkers, water, boulders, and the other dangers you avoided.
           </p>
           <div className="hero__actions">
             <Button to="/order" variant="primary">

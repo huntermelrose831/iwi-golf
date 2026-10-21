@@ -1,8 +1,13 @@
 // Google Analytics 4 (GA4) helper for standard e-commerce events
 
+// GA4 gtag accepts a command string plus a variable payload. We use a union
+// of the two overloads we actually call so the linter sees no `any`.
+type GTagCommand = 'event' | 'js' | 'config'
+type GTagPayload = Record<string, string | number | boolean | object | undefined>
+
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void
+    gtag?: (command: GTagCommand, target: string | Date, params?: GTagPayload) => void
   }
 }
 
@@ -27,9 +32,9 @@ function normaliseItem(item: GA4Item) {
   }
 }
 
-function gtag(...args: any[]) {
+function gtag(command: GTagCommand, target: string | Date, params?: GTagPayload) {
   if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-    window.gtag(...args)
+    window.gtag(command, target, params)
   }
 }
 
