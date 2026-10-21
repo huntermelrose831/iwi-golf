@@ -4,8 +4,11 @@ import {
   getAvailableShippingOptions,
   LOCAL_PICKUP_COURSES,
   formatUSD,
+  getShippingOption,
+  getTotalCents,
   type ShippingMethod,
 } from '../../lib/pricing'
+import { trackAddShippingInfo } from '../../lib/analytics'
 import './CustomerInfoForm.css'
 
 const STATE_OPTIONS = [
@@ -41,6 +44,21 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
   const canContinue =
     order.name && order.email && order.shippingMethod &&
     (order.shippingMethod === 'pickup' || (order.street && order.city && order.state && order.zip))
+
+  const handleNext = () => {
+    // GA4: add_shipping_info — fires when user confirms shipping and proceeds to payment
+    const shippingOption = getShippingOption(order.shippingMethod, order.course)
+    const totalCents = getTotalCents(order.course, order.shippingMethod, order.promoCode)
+    trackAddShippingInfo({
+      course: order.course,
+      hole: order.hole,
+      shippingLabel: shippingOption.label,
+      totalCents,
+      shippingCents: shippingOption.priceCents,
+      coupon: order.promoCode || undefined,
+    })
+    onNext()
+  }
 
   return (
     <div className="customer-info-form">
@@ -207,7 +225,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
         <button
           type="button"
           className="customer-info-form__next"
-          onClick={onNext}
+          onClick={handleNext}
           disabled={!canContinue}
         >
           Next: Payment
