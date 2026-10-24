@@ -46,10 +46,10 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
 export const LOCAL_PICKUP_COURSES = LOCAL_PICKUP_COURSE_NAMES
 
 export function getAvailableShippingOptions(courseLabel: string): ShippingOption[] {
-  const isStanford = courseLabel.startsWith('Stanford University Golf Course')
+  const offersStandard = getCourseByLabel(courseLabel)?.standardShipping ?? false
 
   return SHIPPING_OPTIONS.filter((opt) => {
-    if (opt.id === 'standard' && !isStanford) {
+    if (opt.id === 'standard' && !offersStandard) {
       return false
     }
     return true

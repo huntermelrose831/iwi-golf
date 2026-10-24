@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react'
 import FlagPlacement from '../FlagPlacement/FlagPlacement'
 import type { FlagPosition } from '../FlagPlacement/FlagPlacement'
 import type { OrderDetails } from '../../lib/api'
-import { COURSE_OPTIONS } from '../../lib/courses'
+import { COURSE_OPTIONS, COURSE_GROUPS } from '../../lib/courses'
 import './HoleDetailsForm.css'
 
 const CLUB_OPTIONS = [
@@ -111,11 +111,16 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
           <option value="" disabled>
             Select a course…
           </option>
-          {COURSE_OPTIONS.map((opt) => (
-            <option key={opt.label} value={opt.label}>
-              {opt.label}
-            </option>
+          {COURSE_GROUPS.map((group) => (
+            <optgroup key={group.heading} label={group.heading}>
+              {group.options.map((opt) => (
+                <option key={opt.label} value={opt.label}>
+                  {opt.label}
+                </option>
+              ))}
+            </optgroup>
           ))}
+          <option value="Other">Other</option>
         </select>
       </label>
 

@@ -18,7 +18,14 @@ const SHIPPING_RATES = { pickup: 0, standard: 1500 }
 // Mirrors src/lib/courses.ts COURSE_OPTIONS — keep in sync when courses change.
 // Keys are the full display labels used in order.course.
 const COURSE_PRICES = {
+  'Alta Sierra (Hole 15)':                         5000,
   'DeLaveaga Golf Course (Hole 5)':                5000,
+  'Moffett Field (Hole 7)':                        5000,
+  'PGA West - Nick Private (Hole 7)':              5000,
+  'PGA West - Norman (Hole 4)':                    5000,
+  'PGA West - Palmer (Hole 15)':                   5000,
+  'PGA West - Stadium (Hole 17)':                  5000,
+  'Seascape (Hole 8)':                             5000,
   'Stanford University Golf Course (Holes 4 & 8)': 5000,
   'Other':                                         5000,
 }
@@ -28,7 +35,7 @@ function getCoursePriceCents(courseName) {
 }
 
 function getShippingCents(courseLabel, shippingMethod) {
-  const isStanford = courseLabel.startsWith('Stanford University Golf Course')
+  const isStanford = COURSE_PRICES[courseLabel] !== undefined && !courseLabel.startsWith('DeLaveaga') && courseLabel !== 'Other' // offers standard shipping
   if (isStanford && shippingMethod === 'standard') {
     return SHIPPING_RATES.standard
   }
