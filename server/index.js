@@ -279,6 +279,14 @@ function sanitizeString(value) {
     .slice(0, MAX_FIELD_LENGTH)
 }
 
+// Flag/tee options must match src/lib/options.ts; anything else is dropped.
+const MODEL_COLORS = ['Blue', 'Red', 'Gold', 'Orange', 'Green', 'Yellow']
+const TEE_STYLES = ['bent', 'straight']
+function sanitizeChoice(value, allowed) {
+  const clean = sanitizeString(value)
+  return allowed.includes(clean) ? clean : ''
+}
+
 // Flag position must stay a 0-100 percentage; anything else falls back to center.
 function sanitizePercent(value) {
   const num = Number(value)
@@ -322,6 +330,9 @@ function pickOrderFields(body) {
   }
   order.flagX = sanitizePercent(body?.flagX)
   order.flagY = sanitizePercent(body?.flagY)
+  order.flagColor = sanitizeChoice(body?.flagColor, MODEL_COLORS)
+  order.teeStyle = sanitizeChoice(body?.teeStyle, TEE_STYLES)
+  order.teeColor = sanitizeChoice(body?.teeColor, MODEL_COLORS)
   return order
 }
 
@@ -340,6 +351,9 @@ async function sendOrderNotificationEmail(order) {
     `Yardage: ${order.yardage || '—'}`,
     `Club: ${order.club || '—'}`,
     `Flag position (% from top-left of green): X=${order.flagX ?? '50'}, Y=${order.flagY ?? '50'}`,
+    `Flag color: ${order.flagColor || '—'}`,
+    `Tee: ${order.teeStyle === 'bent' ? 'Bent (wall hanging)' : order.teeStyle === 'straight' ? 'Straight (lay flat on desk)' : '—'}`,
+    `Tee color: ${order.teeColor || '—'}`,
     '',
     `Customer: ${order.name || '—'}`,
     `Email: ${order.email || '—'}`,
@@ -378,6 +392,8 @@ async function sendCustomerReceiptEmail(order) {
       <ul style="list-style: none; padding: 0;">
         <li><strong>Course:</strong> ${order.course || '—'}</li>
         <li><strong>Hole:</strong> ${order.hole || '—'}</li>
+        <li><strong>Flag color:</strong> ${order.flagColor || '—'}</li>
+        <li><strong>Tee:</strong> ${order.teeStyle === 'bent' ? 'Bent (wall hanging)' : order.teeStyle === 'straight' ? 'Straight (lay flat on desk)' : '—'}, ${order.teeColor || '—'}</li>
         <li><strong>Golfer:</strong> ${order.golferName || '—'}</li>
         <li><strong>Date:</strong> ${order.date || '—'}</li>
       </ul>

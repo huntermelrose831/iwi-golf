@@ -59,6 +59,16 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
           <dd className="payment-review__value">{order.hole || '—'}</dd>
         </div>
         <div className="payment-review__row">
+          <dt className="payment-review__term">Flag</dt>
+          <dd className="payment-review__value">{order.flagColor || '—'}</dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">Tee</dt>
+          <dd className="payment-review__value">
+            {order.teeStyle === 'bent' ? 'Bent (wall hanging)' : 'Straight (lay flat)'} · {order.teeColor || '—'}
+          </dd>
+        </div>
+        <div className="payment-review__row">
           <dt className="payment-review__term">Golfer</dt>
           <dd className="payment-review__value">{order.golferName || '—'}</dd>
         </div>

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import type { ChangeEvent } from 'react'
 import FlagPlacement from '../FlagPlacement/FlagPlacement'
+import ModelOptions from '../ModelOptions/ModelOptions'
 import type { FlagPosition } from '../FlagPlacement/FlagPlacement'
 import type { OrderDetails } from '../../lib/api'
 import { COURSE_OPTIONS, COURSE_GROUPS } from '../../lib/courses'
@@ -254,13 +255,26 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             </label>
           )}
 
-          <FlagPlacement value={{ x: order.flagX, y: order.flagY }} onChange={onFlagChange} />
+          <div className="hole-details-form__customize">
+            <FlagPlacement value={{ x: order.flagX, y: order.flagY }} onChange={onFlagChange} />
+            <ModelOptions
+              flagColor={order.flagColor}
+              teeStyle={order.teeStyle}
+              teeColor={order.teeColor}
+              onFlagColorChange={(color) => onFieldChange('flagColor', color)}
+              onTeeStyleChange={(style) => onFieldChange('teeStyle', style)}
+              onTeeColorChange={(color) => onFieldChange('teeColor', color)}
+            />
+          </div>
 
           <button
             type="button"
             className="hole-details-form__next"
             onClick={onNext}
-            disabled={!order.course || !order.hole || !order.golferName}
+            disabled={
+              !order.course || !order.hole || !order.golferName ||
+              !order.flagColor || !order.teeStyle || !order.teeColor
+            }
           >
             Next: Order Information
           </button>

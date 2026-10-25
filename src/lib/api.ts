@@ -1,6 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4242'
 
 import type { ShippingMethod } from './pricing'
+import type { TeeStyle } from './options'
 
 export type OrderDetails = {
   course: string
@@ -11,6 +12,9 @@ export type OrderDetails = {
   club: string
   flagX: number
   flagY: number
+  flagColor: string
+  teeStyle: TeeStyle | ''
+  teeColor: string
   name: string
   email: string
   phone: string
