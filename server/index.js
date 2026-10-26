@@ -374,8 +374,22 @@ async function sendOrderNotificationEmail(order) {
   })
 }
 
-async function sendCustomerReceiptEmail(order) {
-  if (!order.email) return
+// Customer-entered text is placed inside HTML, so escape it first.
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+async function sendCustomerReceiptEmail(rawOrder) {
+  if (!rawOrder.email) return
+
+  const order = Object.fromEntries(
+    Object.entries(rawOrder).map(([key, value]) => [key, escapeHtml(value)]),
+  )
 
   const productCents = getCoursePriceCents(order.course)
   const shippingCents = getShippingCents(order.course, order.shippingMethod)
@@ -399,6 +413,17 @@ async function sendCustomerReceiptEmail(order) {
         <li><strong>Tee Box Marker:</strong> ${order.tbmColor || '—'}</li>
         <li><strong>Golfer:</strong> ${order.golferName || '—'}</li>
         <li><strong>Date:</strong> ${order.date || '—'}</li>
+        <li><strong>Yardage:</strong> ${order.yardage || '—'}</li>
+        <li><strong>Club:</strong> ${order.club || '—'}</li>
+        <li><strong>Flag position on the green:</strong> ${order.flagX ?? '50'}% from the left, ${order.flagY ?? '50'}% from the top</li>
+      </ul>
+
+      <h2 style="color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">Your Contact Info</h2>
+      <ul style="list-style: none; padding: 0;">
+        <li><strong>Name:</strong> ${order.name || '—'}</li>
+        <li><strong>Email:</strong> ${order.email || '—'}</li>
+        <li><strong>Phone:</strong> ${order.phone || '—'}</li>
+        <li><strong>Delivery:</strong> ${order.shippingMethod === 'pickup' ? 'Local Pickup' : 'Standard Shipping'}</li>
       </ul>
 
       <h2 style="color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">Summary</h2>
@@ -431,7 +456,7 @@ async function sendCustomerReceiptEmail(order) {
   await sendGraphEmail({
     subject: `Your IWI Golf Order Confirmation`,
     html,
-    toAddress: order.email,
+    toAddress: rawOrder.email,
   })
 }
 

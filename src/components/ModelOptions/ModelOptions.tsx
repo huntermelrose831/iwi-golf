@@ -74,7 +74,7 @@ function ModelOptions({
           {bentTeeColor && <span className="model-options__chosen">{bentTeeColor}</span>}
         </p>
         <p className="model-options__intro">
-          Ball Tees are what the ball rests on. Every order includes both a Bent and a Straight
+          Ball Tees are what your ball rests on. Every order includes both a Bent and a Straight
           tee, and each one sits toward the corner of the model, back where you teed off. Choose
           a color for each.
         </p>
