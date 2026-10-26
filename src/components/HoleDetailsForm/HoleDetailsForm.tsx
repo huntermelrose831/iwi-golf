@@ -10,6 +10,7 @@ import './HoleDetailsForm.css'
 const CLUB_OPTIONS = [
   'Driver',
   '3 Wood',
+  '4 Wood',
   '5 Wood',
   'Hybrid',
   '2 Iron',

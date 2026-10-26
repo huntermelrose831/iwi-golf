@@ -19,6 +19,13 @@ type PaymentReviewProps = {
   onBack: () => void
 }
 
+function formatDisplayDate(isoDate: string) {
+  if (!isoDate) return '—'
+  const [year, month, day] = isoDate.split('-')
+  if (!year || !month || !day) return isoDate
+  return `${month}/${day}/${year}`
+}
+
 function PaymentReview({ order, onBack }: PaymentReviewProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -59,8 +66,30 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
           <dd className="payment-review__value">{order.hole || '—'}</dd>
         </div>
         <div className="payment-review__row">
-          <dt className="payment-review__term">Flag</dt>
+          <dt className="payment-review__term">Golfer</dt>
+          <dd className="payment-review__value">{order.golferName || '—'}</dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">Date</dt>
+          <dd className="payment-review__value">{formatDisplayDate(order.date)}</dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">Yardage</dt>
+          <dd className="payment-review__value">{order.yardage || '—'}</dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">Club Used</dt>
+          <dd className="payment-review__value">{order.club || '—'}</dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">Flag Color</dt>
           <dd className="payment-review__value">{order.flagColor || '—'}</dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">Flag Placement</dt>
+          <dd className="payment-review__value">
+            {order.flagX ?? 50}% from left · {order.flagY ?? 50}% from top
+          </dd>
         </div>
         <div className="payment-review__row">
           <dt className="payment-review__term">Ball Tees</dt>
@@ -71,10 +100,6 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
         <div className="payment-review__row">
           <dt className="payment-review__term">Tee Box Marker</dt>
           <dd className="payment-review__value">{order.tbmColor || '—'}</dd>
-        </div>
-        <div className="payment-review__row">
-          <dt className="payment-review__term">Golfer</dt>
-          <dd className="payment-review__value">{order.golferName || '—'}</dd>
         </div>
         {order.shippingMethod === 'standard' && (
           <div className="payment-review__row">
@@ -93,7 +118,7 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
         <div className="payment-review__row">
           <dt className="payment-review__term">Contact</dt>
           <dd className="payment-review__value">
-            {order.name} · {order.email}
+            {order.name} · {order.email}{order.phone ? ` · ${order.phone}` : ''}
           </dd>
         </div>
       </dl>

@@ -206,8 +206,7 @@ function CustomerInfoForm({ order, onFieldChange, onBack, onNext }: CustomerInfo
         </>
       )}
 
-      <p className="customer-info-form__section-label" style={{ marginTop: '2rem' }}>Discount (Optional)</p>
-      <label className="customer-info-form__field">
+      <label className="customer-info-form__field" style={{ marginTop: '1rem' }}>
         <span className="customer-info-form__label">Promo Code</span>
         <input
           className="customer-info-form__input"

@@ -1,4 +1,3 @@
-import Button from '../Button/Button'
 import celebration from '../../assets/Celebration.png'
 import './Hero.css'
 
@@ -21,11 +20,6 @@ function Hero() {
 Celebrate yours with a 3D printed model – The green with its contours, the surrounding
 fringe with it’s bunkers, water, boulders, and the other dangers you avoided.
           </p>
-          <div className="hero__actions">
-            <Button to="/order" variant="primary">
-              Order Yours
-            </Button>
-          </div>
         </div>
         <div className="hero__visual">
           <img className="hero__image" src={celebration} alt="3D printed model of a hole-in-one" />

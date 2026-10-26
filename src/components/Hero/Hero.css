@@ -33,7 +33,7 @@
 .hero__subtext {
   max-width: 44ch;
   color: var(--color-text-muted);
-  font-size: 1.05rem;
+  font-size: 20px;
   line-height: 1.6;
   margin: 0;
 }
@@ -60,10 +60,24 @@
 @media (max-width: 860px) {
   .hero__inner {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .hero__copy {
+    display: contents;
   }
 
   .hero__heading {
     font-size: 2.5rem;
+    order: 1;
+  }
+
+  .hero__visual {
+    order: 2;
+  }
+
+  .hero__subtext {
+    order: 3;
   }
 
   .hero__image {
