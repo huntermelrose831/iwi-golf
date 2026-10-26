@@ -280,8 +280,7 @@ function sanitizeString(value) {
 }
 
 // Flag/tee options must match src/lib/options.ts; anything else is dropped.
-const MODEL_COLORS = ['Blue', 'Red', 'Gold', 'Orange', 'Green', 'Yellow']
-const TEE_STYLES = ['bent', 'straight']
+const MODEL_COLORS = ['Blue', 'Red', 'Gold', 'Orange', 'Green', 'Yellow', 'White', 'Black']
 function sanitizeChoice(value, allowed) {
   const clean = sanitizeString(value)
   return allowed.includes(clean) ? clean : ''
@@ -331,8 +330,9 @@ function pickOrderFields(body) {
   order.flagX = sanitizePercent(body?.flagX)
   order.flagY = sanitizePercent(body?.flagY)
   order.flagColor = sanitizeChoice(body?.flagColor, MODEL_COLORS)
-  order.teeStyle = sanitizeChoice(body?.teeStyle, TEE_STYLES)
-  order.teeColor = sanitizeChoice(body?.teeColor, MODEL_COLORS)
+  order.bentTeeColor = sanitizeChoice(body?.bentTeeColor, MODEL_COLORS)
+  order.straightTeeColor = sanitizeChoice(body?.straightTeeColor, MODEL_COLORS)
+  order.tbmColor = sanitizeChoice(body?.tbmColor, MODEL_COLORS)
   return order
 }
 
@@ -352,8 +352,9 @@ async function sendOrderNotificationEmail(order) {
     `Club: ${order.club || '—'}`,
     `Flag position (% from top-left of green): X=${order.flagX ?? '50'}, Y=${order.flagY ?? '50'}`,
     `Flag color: ${order.flagColor || '—'}`,
-    `Tee: ${order.teeStyle === 'bent' ? 'Bent (wall hanging)' : order.teeStyle === 'straight' ? 'Straight (lay flat on desk)' : '—'}`,
-    `Tee color: ${order.teeColor || '—'}`,
+    `Bent Ball Tee color (wall hanging): ${order.bentTeeColor || '—'}`,
+    `Straight Ball Tee color (lay flat on desk): ${order.straightTeeColor || '—'}`,
+    `Tee Box Marker color: ${order.tbmColor || '—'}`,
     '',
     `Customer: ${order.name || '—'}`,
     `Email: ${order.email || '—'}`,
@@ -393,7 +394,9 @@ async function sendCustomerReceiptEmail(order) {
         <li><strong>Course:</strong> ${order.course || '—'}</li>
         <li><strong>Hole:</strong> ${order.hole || '—'}</li>
         <li><strong>Flag color:</strong> ${order.flagColor || '—'}</li>
-        <li><strong>Tee:</strong> ${order.teeStyle === 'bent' ? 'Bent (wall hanging)' : order.teeStyle === 'straight' ? 'Straight (lay flat on desk)' : '—'}, ${order.teeColor || '—'}</li>
+        <li><strong>Bent Ball Tee (wall hanging):</strong> ${order.bentTeeColor || '—'}</li>
+        <li><strong>Straight Ball Tee (lay flat on desk):</strong> ${order.straightTeeColor || '—'}</li>
+        <li><strong>Tee Box Marker:</strong> ${order.tbmColor || '—'}</li>
         <li><strong>Golfer:</strong> ${order.golferName || '—'}</li>
         <li><strong>Date:</strong> ${order.date || '—'}</li>
       </ul>

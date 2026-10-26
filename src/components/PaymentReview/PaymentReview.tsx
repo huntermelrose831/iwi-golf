@@ -63,10 +63,14 @@ function PaymentReview({ order, onBack }: PaymentReviewProps) {
           <dd className="payment-review__value">{order.flagColor || '—'}</dd>
         </div>
         <div className="payment-review__row">
-          <dt className="payment-review__term">Tee</dt>
+          <dt className="payment-review__term">Ball Tees</dt>
           <dd className="payment-review__value">
-            {order.teeStyle === 'bent' ? 'Bent (wall hanging)' : 'Straight (lay flat)'} · {order.teeColor || '—'}
+            Bent: {order.bentTeeColor || '—'} · Straight: {order.straightTeeColor || '—'}
           </dd>
+        </div>
+        <div className="payment-review__row">
+          <dt className="payment-review__term">Tee Box Marker</dt>
+          <dd className="payment-review__value">{order.tbmColor || '—'}</dd>
         </div>
         <div className="payment-review__row">
           <dt className="payment-review__term">Golfer</dt>

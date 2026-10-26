@@ -259,11 +259,13 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             <FlagPlacement value={{ x: order.flagX, y: order.flagY }} onChange={onFlagChange} />
             <ModelOptions
               flagColor={order.flagColor}
-              teeStyle={order.teeStyle}
-              teeColor={order.teeColor}
+              bentTeeColor={order.bentTeeColor}
+              straightTeeColor={order.straightTeeColor}
+              tbmColor={order.tbmColor}
               onFlagColorChange={(color) => onFieldChange('flagColor', color)}
-              onTeeStyleChange={(style) => onFieldChange('teeStyle', style)}
-              onTeeColorChange={(color) => onFieldChange('teeColor', color)}
+              onBentTeeColorChange={(color) => onFieldChange('bentTeeColor', color)}
+              onStraightTeeColorChange={(color) => onFieldChange('straightTeeColor', color)}
+              onTbmColorChange={(color) => onFieldChange('tbmColor', color)}
             />
           </div>
 
@@ -273,7 +275,7 @@ function HoleDetailsForm({ order, onFieldChange, onFlagChange, onNext }: HoleDet
             onClick={onNext}
             disabled={
               !order.course || !order.hole || !order.golferName ||
-              !order.flagColor || !order.teeStyle || !order.teeColor
+              !order.flagColor || !order.bentTeeColor || !order.straightTeeColor || !order.tbmColor
             }
           >
             Next: Order Information
