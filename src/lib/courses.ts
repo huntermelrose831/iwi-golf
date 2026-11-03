@@ -23,11 +23,13 @@ export const COURSES: Course[] = [
   { name: 'PGA West - Stadium',              state: 'CA', priceCents: 5000, localPickup: false, standardShipping: true,  hole: '17', holeLabel: 'Hole 17' },
   { name: 'Seascape',                        state: 'CA', priceCents: 5000, localPickup: false, standardShipping: true,  hole: '8',  holeLabel: 'Hole 8' },
   { name: 'Stanford University Golf Course', state: 'CA', priceCents: 5000, localPickup: false, standardShipping: true,  holeLabel: 'Holes 4 & 8' },
+  { name: 'Michelbook Country Club',         state: 'OR', priceCents: 5000, localPickup: false, standardShipping: true,  hole: '12', holeLabel: 'Hole 12' },
   { name: 'Other',                           state: '',   priceCents: 5000, localPickup: true,  standardShipping: false },
 ]
 
 export const STATE_NAMES: Record<string, string> = {
   CA: 'California',
+  OR: 'Oregon',
 }
 
 function labelFor(course: Course): string {

@@ -21,6 +21,7 @@ const COURSE_PRICES = {
   'Alta Sierra (Hole 15)':                         5000,
   'DeLaveaga Golf Course (Hole 5)':                5000,
   'Moffett Field (Hole 7)':                        5000,
+  'Michelbook Country Club (Hole 12)':             5000,
   'PGA West - Nick Private (Hole 7)':              5000,
   'PGA West - Norman (Hole 4)':                    5000,
   'PGA West - Palmer (Hole 15)':                   5000,
