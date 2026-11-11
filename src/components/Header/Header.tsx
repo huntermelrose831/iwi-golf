@@ -11,7 +11,7 @@ function Header() {
           <span className="header__wordmark">IWI.golf</span>
         </Link>
         <Link to="/order" className="header__cta">
-          Order Yours
+          Order Your Personalized Celebration
         </Link>
       </div>
     </header>

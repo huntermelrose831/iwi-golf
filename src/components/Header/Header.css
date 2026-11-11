@@ -45,7 +45,20 @@
   color: var(--color-text-light);
   font-weight: 600;
   text-decoration: none;
+  text-align: center;
   transition: background-color 0.2s ease;
+}
+
+@media (max-width: 640px) {
+  .header__wordmark {
+    display: none;
+  }
+
+  .header__cta {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
 }
 
 .header__cta:hover {

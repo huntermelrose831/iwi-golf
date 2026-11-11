@@ -1,4 +1,3 @@
-import Button from '../Button/Button'
 import './About.css'
 
 function About() {
@@ -17,7 +16,7 @@ function About() {
         </p>
 
         <p className="about__paragraph">
-          Click "Order Your Personal Celebration," enter the details of your shot
+          Click "Order Your Personalized Celebration" at the top right, enter the details of your shot
           (course name, hole number, yardage, club, and date), and your model will be
           built to order and shipped within seven days.
         </p>
@@ -26,12 +25,6 @@ function About() {
           Most golfers never make a hole-in-one. Those who do almost never make another.
           Don't let this once-in-a-lifetime moment pass without commemorating the event.
         </p>
-
-        <div className="about__actions">
-          <Button to="/order" variant="primary">
-            Order Your Personal Celebration
-          </Button>
-        </div>
       </div>
     </section>
   )

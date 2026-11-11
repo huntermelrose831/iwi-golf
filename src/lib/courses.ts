@@ -15,7 +15,7 @@ export type Course = {
 
 export const COURSES: Course[] = [
   { name: 'Alta Sierra',                     state: 'CA', priceCents: 5000, localPickup: false, standardShipping: true,  hole: '15', holeLabel: 'Hole 15' },
-  { name: 'DeLaveaga Golf Course',           state: 'CA', priceCents: 5000, localPickup: true,  standardShipping: false, hole: '5',  holeLabel: 'Hole 5' },
+  { name: 'DeLaveaga Golf Course',           state: 'CA', priceCents: 5000, localPickup: true,  standardShipping: true,  hole: '5',  holeLabel: 'Hole 5' },
   { name: 'Moffett Field',                   state: 'CA', priceCents: 5000, localPickup: false, standardShipping: true,  hole: '7',  holeLabel: 'Hole 7' },
   { name: 'PGA West - Nick Private',         state: 'CA', priceCents: 5000, localPickup: false, standardShipping: true,  hole: '7',  holeLabel: 'Hole 7' },
   { name: 'PGA West - Norman',               state: 'CA', priceCents: 5000, localPickup: false, standardShipping: true,  hole: '4',  holeLabel: 'Hole 4' },

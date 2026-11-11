@@ -36,6 +36,31 @@ const INITIAL_ORDER: OrderDetails = {
 
 const STEP_LABELS = ['Your Personalized Celebration', 'Order Information', 'Payment']
 
+// Typing this exact golfer name fills in the rest of the form with a test data set.
+const TEST_GOLFER_NAME = 'james carter'
+
+const TEST_ORDER: Partial<OrderDetails> = {
+  course: 'DeLaveaga Golf Course (Hole 5)',
+  hole: '5',
+  date: '2025-11-12',
+  yardage: '153',
+  club: '6 Iron',
+  flagX: 50,
+  flagY: 50,
+  flagColor: 'Blue',
+  bentTeeColor: 'Blue',
+  straightTeeColor: 'Blue',
+  tbmColor: 'Blue',
+  name: 'James Green',
+  email: 'jim.green94303@gmail.com',
+  phone: '408.480.3477',
+  street: '123 Fairway Dr',
+  city: 'Santa Cruz',
+  state: 'CA',
+  zip: '95060',
+  shippingMethod: 'standard',
+}
+
 function Order() {
   const [searchParams] = useSearchParams()
 
@@ -63,6 +88,10 @@ function Order() {
   }, [])
 
   const handleFieldChange = (field: keyof OrderDetails, value: string) => {
+    if (field === 'golferName' && value.trim().toLowerCase() === TEST_GOLFER_NAME) {
+      setOrder((previous) => ({ ...previous, ...TEST_ORDER, golferName: value }))
+      return
+    }
     setOrder((previous) => ({ ...previous, [field]: value }))
   }
 

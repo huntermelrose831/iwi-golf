@@ -36,12 +36,10 @@ function getCoursePriceCents(courseName) {
 }
 
 function getShippingCents(courseLabel, shippingMethod) {
-  const isStanford = COURSE_PRICES[courseLabel] !== undefined && !courseLabel.startsWith('DeLaveaga') && courseLabel !== 'Other' // offers standard shipping
-  if (isStanford && shippingMethod === 'standard') {
-    return SHIPPING_RATES.standard
-  }
-  if (!isStanford && shippingMethod === 'standard') {
-    return 0 // standard shipping not offered for non-Stanford; pickup only
+  // Mirrors standardShipping in src/lib/courses.ts: every listed course ships except "Other"
+  const offersStandardShipping = COURSE_PRICES[courseLabel] !== undefined && courseLabel !== 'Other'
+  if (shippingMethod === 'standard') {
+    return offersStandardShipping ? SHIPPING_RATES.standard : 0
   }
   return SHIPPING_RATES[shippingMethod] ?? 0
 }
